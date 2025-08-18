@@ -17,6 +17,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
   ],
+  pages: {
+    signIn: "/auth/signin",
+    error: "/auth/error",
+  },
   callbacks: {
     async signIn({ user, account }) {
       if (account?.provider === "google") {
@@ -64,6 +68,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.bandspaceSession = token.bandspaceSession;
       }
       return session;
+    },
+    async redirect({ url, baseUrl }) {
+      // Redirect to dashboard after successful login
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      else if (new URL(url).origin === baseUrl) return url;
+      return `${baseUrl}/dashboard`;
     },
     async jwt({ token, user }) {
       // Store the bandspace session in the JWT token

@@ -22,12 +22,18 @@ import { useState } from "react";
 import { GoogleIcon } from "./google-icon";
 
 export function LoginForm() {
-  const { login, loginWithGoogle, isLoading } = useAuth();
+  const { login, isLoading, isAuthenticated } = useAuth();
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+
+  // Redirect if already authenticated
+  if (isAuthenticated) {
+    router.push("/dashboard");
+    return null;
+  }
 
   const handleGoogleLogin = async () => {
     try {
