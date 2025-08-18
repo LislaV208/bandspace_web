@@ -1,0 +1,169 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* BandSpace Light Theme (fallback) */
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+  /* Updated to use proper OKLCH values with chroma and hue for BandSpace colors */
+  --background: oklch(0.145 0.015 264); /* Gray-900 with slight blue tint */
+  --foreground: oklch(0.985 0.005 264); /* White with slight blue tint */
+  --card: oklch(0.205 0.02 264); /* Gray-800 with blue tint */
+  --card-foreground: oklch(0.985 0.005 264);
+  --popover: oklch(0.205 0.02 264);
+  --popover-foreground: oklch(0.985 0.005 264);
+  --primary: oklch(0.35 0.15 264); /* BandSpace Blue #273486 */
+  --primary-foreground: oklch(0.985 0.005 264);
+  --secondary: oklch(0.269 0.025 264); /* Gray-700 with blue tint */
+  --secondary-foreground: oklch(0.825 0.01 264); /* Gray-300 */
+  --muted: oklch(0.269 0.025 264);
+  --muted-foreground: oklch(0.556 0.015 264); /* Gray-500 */
+  --accent: oklch(0.55 0.18 264); /* Blue-600 accent */
+  --accent-foreground: oklch(0.985 0.005 264);
+  --destructive: oklch(0.65 0.25 25); /* Red error color */
+  --destructive-foreground: oklch(0.985 0.005 264);
+  --border: oklch(0.269 0.025 264); /* Gray-700 border */
+  --input: oklch(0.205 0.02 264);
+  --ring: oklch(0.65 0.15 264); /* Blue-400 ring */
+  --success: oklch(0.65 0.18 160); /* Emerald-500 */
+  --primary-light: oklch(0.45 0.18 264); /* Primary Light #3A4DB0 */
+  --primary-dark: oklch(0.25 0.12 264); /* Primary Dark #1A2360 */
+  --accent-light: oklch(0.65 0.15 264); /* Blue-400 */
+  --text-secondary: oklch(0.825 0.01 264); /* Gray-300 */
+  --text-hint: oklch(0.556 0.015 264); /* Gray-500 */
+  --surface: oklch(0.205 0.02 264); /* Gray-800 */
+  --surface-medium: oklch(0.269 0.025 264); /* Gray-700 */
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0.02 264);
+  --sidebar-foreground: oklch(0.985 0.005 264);
+  --sidebar-primary: oklch(0.35 0.15 264);
+  --sidebar-primary-foreground: oklch(0.985 0.005 264);
+  --sidebar-accent: oklch(0.269 0.025 264);
+  --sidebar-accent-foreground: oklch(0.985 0.005 264);
+  --sidebar-border: oklch(0.269 0.025 264);
+  --sidebar-ring: oklch(0.65 0.15 264);
+}
+
+@theme inline {
+  --font-sans: var(--font-inter);
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  /* Added BandSpace specific color utilities with proper OKLCH values */
+  --color-success: var(--success);
+  --color-primary-light: var(--primary-light);
+  --color-primary-dark: var(--primary-dark);
+  --color-accent-light: var(--accent-light);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-hint: var(--text-hint);
+  --color-surface: var(--surface);
+  --color-surface-medium: var(--surface-medium);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  /* Updated BandSpace utility classes with proper color values */
+  .bg-bandspace-blue {
+    background-color: oklch(0.35 0.15 264);
+  }
+  .bg-primary-light {
+    background-color: oklch(0.45 0.18 264);
+  }
+  .bg-primary-dark {
+    background-color: oklch(0.25 0.12 264);
+  }
+  .bg-surface {
+    background-color: oklch(0.205 0.02 264);
+  }
+  .bg-surface-medium {
+    background-color: oklch(0.269 0.025 264);
+  }
+  .text-secondary {
+    color: oklch(0.825 0.01 264);
+  }
+  .text-hint {
+    color: oklch(0.556 0.015 264);
+  }
+  .border-surface-medium {
+    border-color: oklch(0.269 0.025 264);
+  }
+}

@@ -4,123 +4,74 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Development Commands
 
-### Core Development
-- `npm run dev` - Start development server (Vite dev server on http://localhost:5173)
-- `npm run build` - Build for production (TypeScript + Vite build)
-- `npm run preview` - Preview production build locally
-- `npm run lint` - Run ESLint
-
-### Environment Setup
-- Copy `.env.example` to `.env` and configure:
-  - `VITE_API_BASE_URL` - Backend API URL (default: http://localhost:3000)
-  - `VITE_GOOGLE_CLIENT_ID` - Google OAuth client ID
+- **Start development server**: `npm run dev` or `pnpm dev`
+- **Build for production**: `npm run build` or `pnpm build`
+- **Start production server**: `npm run start` or `pnpm start`
+- **Run linter**: `npm run lint` or `pnpm lint`
 
 ## Project Architecture
 
-### Tech Stack
-- **Frontend**: React 19 with TypeScript
-- **Build Tool**: Vite 7.x with Hot Module Replacement
-- **Styling**: TailwindCSS v4 with first-party Vite plugin
-- **HTTP Client**: Axios with interceptors for auth (to be added)
-- **Routing**: React Router DOM (to be added)
-- **Testing**: Vitest (to be added)
-- **Linting**: ESLint with React and TypeScript rules
+### Framework & Tech Stack
+- **Next.js 14** with App Router
+- **TypeScript** with strict mode enabled
+- **Tailwind CSS v4** for styling
+- **shadcn/ui** components with Radix UI primitives
+- **React Hook Form** with Zod validation
+- **Lucide React** for icons
 
-### Project Structure (Planned)
-```
-src/
-├── lib/
-│   ├── api/              # API communication layer
-│   │   ├── client.ts     # Axios instance with auth interceptors
-│   │   ├── auth.ts       # Authentication endpoints
-│   │   ├── projects.ts   # Project CRUD operations
-│   │   └── songs.ts      # Song management endpoints
-│   ├── components/       # Reusable UI components
-│   │   ├── auth/         # Authentication forms
-│   │   ├── dashboard/    # Dashboard components
-│   │   ├── project/      # Project management UI
-│   │   ├── song/         # Song player and management
-│   │   └── ui/           # Generic UI components
-│   ├── stores/           # State management (to be added)
-│   └── types/            # TypeScript type definitions
-│       ├── auth.ts       # User and authentication types
-│       ├── project.ts    # Project and member types
-│       └── song.ts       # Song and upload types
-└── pages/                # Page components
-    ├── auth/             # Login/register pages
-    ├── dashboard/        # Main dashboard
-    ├── project/          # Project detail views
-    └── song/             # Song detail views
-```
+### Key Configuration Notes
+- Build errors for TypeScript and ESLint are currently ignored in `next.config.mjs`
+- Images are unoptimized in Next.js config
+- Uses `@/*` path mapping for absolute imports
+- pnpm is the package manager (evidenced by pnpm-lock.yaml)
 
-### TailwindCSS v4 Configuration
-- **Import**: Uses single `@import "tailwindcss"` in index.css
-- **Plugin**: Configured via `@tailwindcss/vite` in vite.config.ts
-- **Theme**: Custom BandSpace colors (to be configured in tailwind.config.js)
+### Architecture Patterns
 
-### UI Theme (BandSpace Colors)
-- **Primary**: `#273486` (BandSpace Blue)
-- **Background**: `#111827` (bg-gray-900)
-- **Surface**: `#1F2937` (bg-gray-800)
-- **Accent**: `#2563EB` (bg-blue-600)
-- **Text Primary**: `#FFFFFF`
-- **Text Secondary**: `#D1D5DB`
-- **Border**: `#374151`
+#### API Layer (`lib/api.ts`)
+- Centralized API client with Bearer token authentication
+- Backend API base URL: `https://bandspace-app-b8372bfadc38.herokuapp.com/api`
+- Custom `ApiError` class for error handling
+- Supports both JSON and FormData requests (for file uploads)
 
-## Backend Integration (Planned)
+#### Authentication (`contexts/auth-context.tsx`)
+- React Context for global auth state management
+- localStorage-based session persistence with key `bandspace_session`
+- Auto-refresh token mechanism (every 50 minutes)
+- Supports email/password and Google OAuth login
 
-### Expected API Endpoints
-The app expects a NestJS backend with these endpoints:
+#### Type System (`lib/types.ts`)
+- Core entities: `User`, `Project`, `Song`, `Session`, `ProjectInvitation`
+- Songs include file metadata, duration, BPM, and lyrics
+- Projects have slug-based routing
 
-**Authentication**:
-- `POST /auth/login` - Email/password login
-- `POST /auth/register` - User registration
-- `POST /auth/refresh` - Token refresh
-- `POST /auth/logout` - Logout
+#### Component Structure
+- `components/ui/` - shadcn/ui components
+- `components/auth/` - Authentication-related components
+- `components/dashboard/` - Dashboard page components
+- `components/project/` - Project-specific components with tabs
+- `components/audio/` - Audio player components
 
-**Projects**:
-- `GET /projects` - User's projects
-- `POST /projects` - Create project
-- `GET /projects/:id` - Project details
-- `PATCH /projects/:id` - Update project
-- `DELETE /projects/:id` - Delete project
+#### App Structure (Next.js App Router)
+- `app/page.tsx` - Landing/home page
+- `app/dashboard/page.tsx` - User dashboard
+- `app/project/[id]/page.tsx` - Individual project pages
+- `app/layout.tsx` - Root layout with theme provider
 
-**Songs**:
-- `GET /projects/:id/songs` - Project songs
-- `POST /projects/:id/songs` - Upload song
-- `GET /projects/:id/songs/:songId` - Song details
-- `DELETE /projects/:id/songs/:songId` - Delete song
+### Audio Features
+- Custom audio player hooks (`hooks/use-audio-player.ts`)
+- Support for song uploads with metadata (title, BPM, lyrics)
+- File download functionality for songs
 
-### Data Flow (Planned)
-1. Authentication state managed via localStorage
-2. API client automatically adds Bearer tokens to requests
-3. Failed auth (401) triggers token refresh attempt
-4. If refresh fails, user redirected to login
+### UI/UX Patterns
+- Dark/light theme support via `next-themes`
+- Mobile-responsive design with custom mobile detection
+- Toast notifications using Sonner
+- File upload via react-dropzone
+- Form validation with React Hook Form + Zod
 
-## Development Notes
-
-### Current State
-- ✅ Vite + React 19 + TypeScript setup
-- ✅ TailwindCSS v4 with Vite plugin
-- ✅ ESLint configuration
-- ⏳ Project structure (needs creation)
-- ⏳ Dependencies (axios, react-router-dom, etc.)
-- ⏳ Custom TailwindCSS theme
-- ⏳ API client implementation
-- ⏳ UI components and pages
-
-### Implementation Status
-Based on `PLAN_IMPLEMENTACJI_WEBOWA_BANDSPACE.md`, this is a web port of a Flutter mobile app. Next steps:
-1. Add missing dependencies (axios, react-router-dom, etc.)
-2. Create project folder structure
-3. Implement TypeScript types
-4. Setup API client with JWT auth
-5. Configure custom TailwindCSS theme
-6. Build UI components matching mobile app design
-
-### Key Implementation Requirements
-1. **Design Consistency**: UI must match the Flutter mobile app's design language
-2. **Desktop-First**: Optimized for desktop use, unlike mobile-first approach
-3. **Simplified Features**: Web version has reduced functionality vs mobile app
-4. **Authentication**: JWT with refresh token flow
-5. **File Uploads**: Drag & drop for audio files with progress tracking
+### Development Notes
+- Use existing patterns for new components (check similar components first)
+- Authentication is required for most API endpoints
+- Project-based collaboration model with invitations
+- File uploads should use FormData with the uploadRequest method
+- All forms should use React Hook Form with Zod validation
