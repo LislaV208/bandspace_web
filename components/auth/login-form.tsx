@@ -16,6 +16,7 @@ import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/contexts/auth-context";
 import { ApiError } from "@/lib/api";
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { GoogleIcon } from "./google-icon";
@@ -31,17 +32,10 @@ export function LoginForm() {
   const handleGoogleLogin = async () => {
     try {
       setError(null);
-      // TODO: Implement actual Google OAuth flow
-      // For now, simulate with a mock token
-      await loginWithGoogle("mock-google-token");
-      router.push("/dashboard");
+      await signIn("google", { callbackUrl: "/dashboard" });
     } catch (error) {
       console.error("Google login failed:", error);
-      if (error instanceof ApiError) {
-        setError(error.message);
-      } else {
-        setError("Logowanie przez Google nie powiodło się. Spróbuj ponownie.");
-      }
+      setError("Logowanie przez Google nie powiodło się. Spróbuj ponownie.");
     }
   };
 

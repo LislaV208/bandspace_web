@@ -1,4 +1,6 @@
-const API_BASE_URL = "https://bandspace-app-b8372bfadc38.herokuapp.com/api";
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL ||
+  "https://bandspace-app-b8372bfadc38.herokuapp.com/api";
 
 class ApiClient {
   private baseUrl: string;
