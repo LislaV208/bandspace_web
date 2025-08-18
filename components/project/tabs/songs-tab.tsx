@@ -179,7 +179,7 @@ export function SongsTab({ projectId }: SongsTabProps) {
           <div className="h-10 bg-muted rounded w-32 animate-pulse"></div>
         </div>
         <div className="grid gap-4">
-          {[...Array(3)].map((_, i) => (
+          {Array.from({ length: 3 }).map((_, i) => (
             <Card key={i} className="border-border bg-card animate-pulse">
               <CardContent className="p-6">
                 <div className="space-y-3">

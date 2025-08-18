@@ -59,7 +59,7 @@ export function ProjectHeader({ projectId }: ProjectHeaderProps) {
             <div className="h-8 bg-muted rounded w-1/3"></div>
             <div className="h-4 bg-muted rounded w-1/4"></div>
             <div className="flex space-x-2">
-              {[...Array(3)].map((_, i) => (
+              {Array.from({ length: 3 }).map((_, i) => (
                 <div key={i} className="h-8 w-8 bg-muted rounded-full"></div>
               ))}
             </div>

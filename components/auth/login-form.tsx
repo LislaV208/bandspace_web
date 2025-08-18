@@ -1,65 +1,71 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
-import { Mail, Lock, Eye, EyeOff } from "lucide-react"
-import { GoogleIcon } from "./google-icon"
-import { useAuth } from "@/contexts/auth-context"
-import { ApiError } from "@/lib/api"
-import { useRouter } from "next/navigation"
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import { useAuth } from "@/contexts/auth-context";
+import { ApiError } from "@/lib/api";
+import { Eye, EyeOff, Lock, Mail } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { GoogleIcon } from "./google-icon";
 
 export function LoginForm() {
-  const { login, loginWithGoogle, isLoading } = useAuth()
-  const router = useRouter()
-  const [showPassword, setShowPassword] = useState(false)
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [error, setError] = useState<string | null>(null)
+  const { login, loginWithGoogle, isLoading } = useAuth();
+  const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
   const handleGoogleLogin = async () => {
     try {
-      setError(null)
+      setError(null);
       // TODO: Implement actual Google OAuth flow
       // For now, simulate with a mock token
-      await loginWithGoogle("mock-google-token")
-      router.push("/dashboard")
+      await loginWithGoogle("mock-google-token");
+      router.push("/dashboard");
     } catch (error) {
-      console.error("Google login failed:", error)
+      console.error("Google login failed:", error);
       if (error instanceof ApiError) {
-        setError(error.message)
+        setError(error.message);
       } else {
-        setError("Google login failed. Please try again.")
+        setError("Google login failed. Please try again.");
       }
     }
-  }
+  };
 
   const handleEmailLogin = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!email.trim() || !password.trim()) return
+    e.preventDefault();
+    if (!email.trim() || !password.trim()) return;
 
     try {
-      setError(null)
-      await login(email, password)
-      router.push("/dashboard")
+      setError(null);
+      await login(email, password);
+      router.push("/dashboard");
     } catch (error) {
-      console.error("Login failed:", error)
+      console.error("Login failed:", error);
       if (error instanceof ApiError) {
         if (error.status === 401) {
-          setError("Invalid email or password")
+          setError("Invalid email or password");
         } else {
-          setError(error.message)
+          setError(error.message);
         }
       } else {
-        setError("Login failed. Please try again.")
+        setError("Login failed. Please try again.");
       }
     }
-  }
+  };
 
   return (
     <Card className="border-border bg-card">
@@ -71,7 +77,11 @@ export function LoginForm() {
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Error Message */}
-        {error && <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-lg text-center">{error}</div>}
+        {error && (
+          <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-lg text-center">
+            {error}
+          </div>
+        )}
 
         {/* Google Login Button */}
         <Button
@@ -89,7 +99,9 @@ export function LoginForm() {
             <Separator className="w-full" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-card px-2 text-muted-foreground">Or continue with</span>
+            <span className="bg-card px-2 text-muted-foreground">
+              Or continue with
+            </span>
           </div>
         </div>
 
@@ -153,17 +165,23 @@ export function LoginForm() {
         </form>
 
         <div className="text-center space-y-2">
-          <Button variant="link" className="text-accent hover:text-accent/80 p-0">
+          <Button
+            variant="link"
+            className="text-accent hover:text-accent/80 p-0"
+          >
             Forgot your password?
           </Button>
           <div className="text-sm text-muted-foreground">
-            Don't have an account?{" "}
-            <Button variant="link" className="text-accent hover:text-accent/80 p-0">
+            Don&apos;t have an account?{" "}
+            <Button
+              variant="link"
+              className="text-accent hover:text-accent/80 p-0"
+            >
               Sign up
             </Button>
           </div>
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

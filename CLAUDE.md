@@ -24,6 +24,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Images are unoptimized in Next.js config
 - Uses `@/*` path mapping for absolute imports
 - pnpm is the package manager (evidenced by pnpm-lock.yaml)
+- IDE is configured to prioritize ESLint over TypeScript errors via `.vscode/settings.json`
+- Use `npm run lint` for consistent linting (matches IDE setup)
 
 ### Architecture Patterns
 

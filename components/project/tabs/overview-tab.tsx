@@ -89,7 +89,7 @@ export function OverviewTab({ projectId }: OverviewTabProps) {
     return (
       <div className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[...Array(3)].map((_, i) => (
+          {Array.from({ length: 3 }).map((_, i) => (
             <Card key={i} className="border-border bg-card animate-pulse">
               <CardHeader>
                 <div className="h-5 bg-muted rounded w-1/2"></div>
@@ -104,7 +104,7 @@ export function OverviewTab({ projectId }: OverviewTabProps) {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {[...Array(3)].map((_, i) => (
+              {Array.from({ length: 3 }).map((_, i) => (
                 <div key={i} className="h-16 bg-muted rounded"></div>
               ))}
             </div>
