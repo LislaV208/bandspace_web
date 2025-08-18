@@ -1,8 +1,7 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,25 +9,26 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Music, Plus, Bell, Settings, LogOut, User } from "lucide-react"
-import { CreateProjectDialog } from "./create-project-dialog"
-import { useAuth } from "@/contexts/auth-context"
-import { useRouter } from "next/navigation"
+} from "@/components/ui/dropdown-menu";
+import { useAuth } from "@/contexts/auth-context";
+import { Bell, LogOut, Music, Plus, Settings, User } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { CreateProjectDialog } from "./create-project-dialog";
 
 export function DashboardHeader() {
-  const { user, logout } = useAuth()
-  const router = useRouter()
-  const [showCreateProject, setShowCreateProject] = useState(false)
+  const { user, logout } = useAuth();
+  const router = useRouter();
+  const [showCreateProject, setShowCreateProject] = useState(false);
 
   const handleLogout = async () => {
     try {
-      await logout()
-      router.push("/")
+      await logout();
+      router.push("/");
     } catch (error) {
-      console.error("Logout failed:", error)
+      console.error("Logout failed:", error);
     }
-  }
+  };
 
   return (
     <>
@@ -64,9 +64,15 @@ export function DashboardHeader() {
             {/* User Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                <Button
+                  variant="ghost"
+                  className="relative h-10 w-10 rounded-full"
+                >
                   <Avatar className="h-10 w-10">
-                    <AvatarImage src={undefined || "/placeholder.svg"} alt={user?.name || "User"} />
+                    <AvatarImage
+                      src={"/placeholder.svg"}
+                      alt={user?.name || "User"}
+                    />
                     <AvatarFallback className="bg-secondary">
                       {user?.name
                         ?.split(" ")
@@ -81,8 +87,12 @@ export function DashboardHeader() {
               <DropdownMenuContent className="w-56" align="end" forceMount>
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none">{user?.name || "User"}</p>
-                    <p className="text-xs leading-none text-muted-foreground">{user?.email}</p>
+                    <p className="text-sm font-medium leading-none">
+                      {user?.name || "User"}
+                    </p>
+                    <p className="text-xs leading-none text-muted-foreground">
+                      {user?.email}
+                    </p>
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
@@ -105,7 +115,10 @@ export function DashboardHeader() {
         </div>
       </header>
 
-      <CreateProjectDialog open={showCreateProject} onOpenChange={setShowCreateProject} />
+      <CreateProjectDialog
+        open={showCreateProject}
+        onOpenChange={setShowCreateProject}
+      />
     </>
-  )
+  );
 }
