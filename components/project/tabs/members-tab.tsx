@@ -62,13 +62,13 @@ export function MembersTab({ projectId }: MembersTabProps) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-foreground">Project Members</h2>
-          <p className="text-muted-foreground">{members.length} members in this project</p>
+          <h2 className="text-2xl font-bold text-foreground">Członkowie Projektu</h2>
+          <p className="text-muted-foreground">{members.length} członk{members.length === 1 ? "" : members.length >= 2 && members.length <= 4 ? "i" : "ów"} w tym projekcie</p>
         </div>
 
         <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
           <UserPlus className="h-4 w-4 mr-2" />
-          Invite Member
+          Zaproś Członka
         </Button>
       </div>
 
@@ -91,11 +91,11 @@ export function MembersTab({ projectId }: MembersTabProps) {
 
                   <div className="space-y-1">
                     <div className="flex items-center space-x-2">
-                      <h3 className="font-semibold text-foreground">{member.name || "Unknown User"}</h3>
+                      <h3 className="font-semibold text-foreground">{member.name || "Nieznany użytkownik"}</h3>
                       {index === 0 && (
                         <Badge variant="secondary" className="text-xs">
                           <Crown className="h-3 w-3 mr-1" />
-                          Owner
+                          Właściciel
                         </Badge>
                       )}
                     </div>
@@ -114,8 +114,8 @@ export function MembersTab({ projectId }: MembersTabProps) {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem>Make Admin</DropdownMenuItem>
-                      <DropdownMenuItem className="text-destructive">Remove from Project</DropdownMenuItem>
+                      <DropdownMenuItem>Zrób administratorem</DropdownMenuItem>
+                      <DropdownMenuItem className="text-destructive">Usuń z projektu</DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 )}

@@ -43,7 +43,7 @@ export default function HomePage() {
             </div>
           </div>
           <h1 className="text-3xl font-bold text-foreground">BandSpace</h1>
-          <p className="text-muted-foreground mt-2">Collaborate on music with your band</p>
+          <p className="text-muted-foreground mt-2">Współpracuj nad muzyką z zespołem</p>
         </div>
 
         {/* Login Form */}
@@ -51,7 +51,7 @@ export default function HomePage() {
 
         <div className="text-center">
           <a href="/dashboard" className="text-sm text-accent hover:text-accent/80 underline">
-            View Dashboard Demo
+            Zobacz demo panelu
           </a>
         </div>
       </div>

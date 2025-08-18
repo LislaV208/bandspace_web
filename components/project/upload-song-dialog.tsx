@@ -61,11 +61,11 @@ export function UploadSongDialog({ open, onOpenChange, projectId, onSongUploaded
     onDropRejected: (fileRejections) => {
       const rejection = fileRejections[0]
       if (rejection.errors[0]?.code === "file-too-large") {
-        setError("File size must be less than 50MB")
+        setError("Rozmiar pliku musi być mniejszy niż 50MB")
       } else if (rejection.errors[0]?.code === "file-invalid-type") {
-        setError("Please upload a valid audio file (MP3, WAV, FLAC, M4A, AAC)")
+        setError("Proszę prześlać prawidłowy plik dźwiękowy (MP3, WAV, FLAC, M4A, AAC)")
       } else {
-        setError("Invalid file. Please try again.")
+        setError("Nieprawidłowy plik. Spróbuj ponownie.")
       }
     },
   })
@@ -118,7 +118,7 @@ export function UploadSongDialog({ open, onOpenChange, projectId, onSongUploaded
       if (error instanceof ApiError) {
         setError(error.message)
       } else {
-        setError("Failed to upload song. Please try again.")
+        setError("Nie udało się prześlać utworu. Spróbuj ponownie.")
       }
     } finally {
       setIsUploading(false)
@@ -144,9 +144,9 @@ export function UploadSongDialog({ open, onOpenChange, projectId, onSongUploaded
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[500px] bg-card border-border">
         <DialogHeader>
-          <DialogTitle className="text-foreground">Upload Song</DialogTitle>
+          <DialogTitle className="text-foreground">Prześlij Utwór</DialogTitle>
           <DialogDescription className="text-muted-foreground">
-            Add a new song to your project with metadata and lyrics.
+            Dodaj nowy utwór do projektu z metadanymi i tekstem.
           </DialogDescription>
         </DialogHeader>
 
@@ -166,10 +166,10 @@ export function UploadSongDialog({ open, onOpenChange, projectId, onSongUploaded
                 </div>
                 <div>
                   <p className="text-foreground font-medium">
-                    {isDragActive ? "Drop your audio file here" : "Drag & drop your audio file"}
+                    {isDragActive ? "Upuść plik dźwiękowy tutaj" : "Przeciągnij i upuść plik dźwiękowy"}
                   </p>
                   <p className="text-sm text-muted-foreground mt-1">
-                    or click to browse (MP3, WAV, FLAC, M4A, AAC - max 50MB)
+                    lub kliknij aby przeglądać (MP3, WAV, FLAC, M4A, AAC - maks. 50MB)
                   </p>
                 </div>
               </div>
@@ -208,7 +208,7 @@ export function UploadSongDialog({ open, onOpenChange, projectId, onSongUploaded
           {isUploading && (
             <div className="space-y-2">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-foreground">Uploading...</span>
+                <span className="text-foreground">Przesyłanie...</span>
                 <span className="text-muted-foreground">{Math.round(uploadProgress)}%</span>
               </div>
               <Progress value={uploadProgress} className="h-2" />
@@ -220,11 +220,11 @@ export function UploadSongDialog({ open, onOpenChange, projectId, onSongUploaded
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="title" className="text-foreground">
-                  Song Title *
+                  Tytuł Utworu *
                 </Label>
                 <Input
                   id="title"
-                  placeholder="Enter song title"
+                  placeholder="Wprowadź tytuł utworu"
                   value={metadata.title}
                   onChange={(e) => setMetadata((prev) => ({ ...prev, title: e.target.value }))}
                   className="bg-input border-border"
@@ -235,12 +235,12 @@ export function UploadSongDialog({ open, onOpenChange, projectId, onSongUploaded
 
               <div className="space-y-2">
                 <Label htmlFor="bpm" className="text-foreground">
-                  BPM (Optional)
+                  BPM (Opcjonalnie)
                 </Label>
                 <Input
                   id="bpm"
                   type="number"
-                  placeholder="e.g. 120"
+                  placeholder="np. 120"
                   value={metadata.bpm}
                   onChange={(e) => setMetadata((prev) => ({ ...prev, bpm: e.target.value }))}
                   className="bg-input border-border"
@@ -252,11 +252,11 @@ export function UploadSongDialog({ open, onOpenChange, projectId, onSongUploaded
 
               <div className="space-y-2">
                 <Label htmlFor="lyrics" className="text-foreground">
-                  Lyrics (Optional)
+                  Tekst (Opcjonalnie)
                 </Label>
                 <Textarea
                   id="lyrics"
-                  placeholder="Enter song lyrics..."
+                  placeholder="Wprowadź tekst utworu..."
                   value={metadata.lyrics}
                   onChange={(e) => setMetadata((prev) => ({ ...prev, lyrics: e.target.value }))}
                   className="bg-input border-border resize-none"
@@ -270,14 +270,14 @@ export function UploadSongDialog({ open, onOpenChange, projectId, onSongUploaded
           {/* Actions */}
           <div className="flex justify-end space-x-2">
             <Button variant="outline" onClick={handleClose} disabled={isUploading}>
-              Cancel
+              Anuluj
             </Button>
             <Button
               onClick={handleUpload}
               disabled={!selectedFile || !metadata.title.trim() || isUploading}
               className="bg-primary hover:bg-primary/90 text-primary-foreground"
             >
-              {isUploading ? "Uploading..." : "Upload Song"}
+              {isUploading ? "Przesyłanie..." : "Prześlij Utwór"}
             </Button>
           </div>
         </div>

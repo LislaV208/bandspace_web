@@ -27,7 +27,7 @@ export function SongDetailsDialog({ open, onOpenChange, song }: SongDetailsDialo
   }
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
+    return new Date(dateString).toLocaleDateString("pl-PL", {
       year: "numeric",
       month: "long",
       day: "numeric",
@@ -60,19 +60,19 @@ export function SongDetailsDialog({ open, onOpenChange, song }: SongDetailsDialo
             <FileAudio className="h-5 w-5 text-primary" />
             <span>{song.title}</span>
           </DialogTitle>
-          <DialogDescription className="text-muted-foreground">Detailed information about this song</DialogDescription>
+          <DialogDescription className="text-muted-foreground">Szczegółowe informacje o tym utworze</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6">
           {/* File Information */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-foreground">File Information</h3>
+            <h3 className="text-lg font-semibold text-foreground">Informacje o pliku</h3>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <div className="flex items-center space-x-2 text-sm">
                   <FileAudio className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-muted-foreground">Filename:</span>
+                  <span className="text-muted-foreground">Nazwa pliku:</span>
                 </div>
                 <p className="text-foreground font-medium">{song.file.fileName}</p>
               </div>
@@ -91,7 +91,7 @@ export function SongDetailsDialog({ open, onOpenChange, song }: SongDetailsDialo
               <div className="space-y-2">
                 <div className="flex items-center space-x-2 text-sm">
                   <Clock className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-muted-foreground">Duration:</span>
+                  <span className="text-muted-foreground">Czas trwania:</span>
                 </div>
                 <p className="text-foreground font-medium">{formatDuration(song.duration)}</p>
               </div>
@@ -102,13 +102,13 @@ export function SongDetailsDialog({ open, onOpenChange, song }: SongDetailsDialo
 
           {/* Song Metadata */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-foreground">Song Details</h3>
+            <h3 className="text-lg font-semibold text-foreground">Szczegóły utworu</h3>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <div className="flex items-center space-x-2 text-sm">
                   <User className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-muted-foreground">Created by:</span>
+                  <span className="text-muted-foreground">Utworzono przez:</span>
                 </div>
                 <p className="text-foreground font-medium">{song.createdBy.name || song.createdBy.email}</p>
               </div>
@@ -116,7 +116,7 @@ export function SongDetailsDialog({ open, onOpenChange, song }: SongDetailsDialo
               <div className="space-y-2">
                 <div className="flex items-center space-x-2 text-sm">
                   <Calendar className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-muted-foreground">Created:</span>
+                  <span className="text-muted-foreground">Data utworzenia:</span>
                 </div>
                 <p className="text-foreground font-medium">{formatDate(song.createdAt)}</p>
               </div>
@@ -136,7 +136,7 @@ export function SongDetailsDialog({ open, onOpenChange, song }: SongDetailsDialo
               <div className="space-y-2">
                 <div className="flex items-center space-x-2 text-sm">
                   <Calendar className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-muted-foreground">Last updated:</span>
+                  <span className="text-muted-foreground">Ostatnia aktualizacja:</span>
                 </div>
                 <p className="text-foreground font-medium">{formatDate(song.updatedAt)}</p>
               </div>
@@ -150,7 +150,7 @@ export function SongDetailsDialog({ open, onOpenChange, song }: SongDetailsDialo
               <div className="space-y-4">
                 <div className="flex items-center space-x-2">
                   <FileText className="h-5 w-5 text-muted-foreground" />
-                  <h3 className="text-lg font-semibold text-foreground">Lyrics</h3>
+                  <h3 className="text-lg font-semibold text-foreground">Tekst</h3>
                 </div>
 
                 <ScrollArea className="h-32 w-full rounded-lg border border-border p-4 bg-muted/20">
@@ -168,13 +168,13 @@ export function SongDetailsDialog({ open, onOpenChange, song }: SongDetailsDialo
               className="border-border hover:bg-secondary bg-transparent"
             >
               <Download className="h-4 w-4 mr-2" />
-              Download
+              Pobierz
             </Button>
             <Button
               onClick={() => onOpenChange(false)}
               className="bg-primary hover:bg-primary/90 text-primary-foreground"
             >
-              Close
+              Zamknij
             </Button>
           </div>
         </div>

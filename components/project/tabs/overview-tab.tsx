@@ -33,21 +33,21 @@ export function OverviewTab({ projectId }: OverviewTabProps) {
         {
           id: 1,
           type: "song_upload",
-          description: 'uploaded "Summer Nights"',
+          description: 'prześlał(a) "Summer Nights"',
           timestamp: "2024-01-20T10:00:00Z",
           user: "John Doe",
         },
         {
           id: 2,
           type: "member_join",
-          description: "joined the project",
+          description: "dołączył(a) do projektu",
           timestamp: "2024-01-19T15:30:00Z",
           user: "Mike Johnson",
         },
         {
           id: 3,
           type: "song_edit",
-          description: 'updated "Acoustic Dreams" details',
+          description: 'zaktualizował(a) szczegóły "Acoustic Dreams"',
           timestamp: "2024-01-19T09:15:00Z",
           user: "Jane Smith",
         },
@@ -65,10 +65,10 @@ export function OverviewTab({ projectId }: OverviewTabProps) {
     const now = new Date()
     const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60))
 
-    if (diffInHours < 1) return "Just now"
-    if (diffInHours < 24) return `${diffInHours}h ago`
+    if (diffInHours < 1) return "Teraz"
+    if (diffInHours < 24) return `${diffInHours}g temu`
     const diffInDays = Math.floor(diffInHours / 24)
-    if (diffInDays < 7) return `${diffInDays}d ago`
+    if (diffInDays < 7) return `${diffInDays}d temu`
     return date.toLocaleDateString()
   }
 
@@ -122,36 +122,36 @@ export function OverviewTab({ projectId }: OverviewTabProps) {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="border-border bg-card">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Total Songs</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Łączna liczba utworów</CardTitle>
             <Music className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-foreground">{stats.totalSongs}</div>
-            <p className="text-xs text-muted-foreground">Uploaded by team members</p>
+            <p className="text-xs text-muted-foreground">Przesłano przez członków zespołu</p>
           </CardContent>
         </Card>
 
         <Card className="border-border bg-card">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Team Members</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Członkowie Zespołu</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-foreground">{stats.totalMembers}</div>
-            <p className="text-xs text-muted-foreground">Active collaborators</p>
+            <p className="text-xs text-muted-foreground">Aktywni współpracownicy</p>
           </CardContent>
         </Card>
 
         <Card className="border-border bg-card">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Last Activity</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Ostatnia Aktywność</CardTitle>
             <Calendar className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-foreground">
               {formatRelativeTime(stats.recentActivity[0]?.timestamp || new Date().toISOString())}
             </div>
-            <p className="text-xs text-muted-foreground">Most recent update</p>
+            <p className="text-xs text-muted-foreground">Najnowsza aktualizacja</p>
           </CardContent>
         </Card>
       </div>
@@ -159,8 +159,8 @@ export function OverviewTab({ projectId }: OverviewTabProps) {
       {/* Recent Activity */}
       <Card className="border-border bg-card">
         <CardHeader>
-          <CardTitle className="text-foreground">Recent Activity</CardTitle>
-          <CardDescription className="text-muted-foreground">Latest updates from your team members</CardDescription>
+          <CardTitle className="text-foreground">Ostatnia Aktywność</CardTitle>
+          <CardDescription className="text-muted-foreground">Najnowsze aktualizacje od członków zespołu</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">

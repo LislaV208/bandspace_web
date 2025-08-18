@@ -86,8 +86,8 @@ export function EditSongDialog({ open, onOpenChange, song, onSongUpdated }: Edit
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[500px] bg-card border-border">
         <DialogHeader>
-          <DialogTitle className="text-foreground">Edit Song</DialogTitle>
-          <DialogDescription className="text-muted-foreground">Update song metadata and lyrics.</DialogDescription>
+          <DialogTitle className="text-foreground">Edytuj Utwór</DialogTitle>
+          <DialogDescription className="text-muted-foreground">Zaktualizuj metadane i tekst utworu.</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6">
@@ -118,11 +118,11 @@ export function EditSongDialog({ open, onOpenChange, song, onSongUpdated }: Edit
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="title" className="text-foreground">
-                Song Title *
+                Tytuł Utworu *
               </Label>
               <Input
                 id="title"
-                placeholder="Enter song title"
+                placeholder="Wprowadź tytuł utworu"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 className="bg-input border-border"
@@ -133,12 +133,12 @@ export function EditSongDialog({ open, onOpenChange, song, onSongUpdated }: Edit
 
             <div className="space-y-2">
               <Label htmlFor="bpm" className="text-foreground">
-                BPM (Optional)
+                BPM (Opcjonalnie)
               </Label>
               <Input
                 id="bpm"
                 type="number"
-                placeholder="e.g. 120"
+                placeholder="np. 120"
                 value={bpm}
                 onChange={(e) => setBpm(e.target.value)}
                 className="bg-input border-border"
@@ -150,11 +150,11 @@ export function EditSongDialog({ open, onOpenChange, song, onSongUpdated }: Edit
 
             <div className="space-y-2">
               <Label htmlFor="lyrics" className="text-foreground">
-                Lyrics (Optional)
+                Tekst (Opcjonalnie)
               </Label>
               <Textarea
                 id="lyrics"
-                placeholder="Enter song lyrics..."
+                placeholder="Wprowadź tekst utworu..."
                 value={lyrics}
                 onChange={(e) => setLyrics(e.target.value)}
                 className="bg-input border-border resize-none"
@@ -166,14 +166,14 @@ export function EditSongDialog({ open, onOpenChange, song, onSongUpdated }: Edit
             {/* Actions */}
             <div className="flex justify-end space-x-2 pt-4">
               <Button type="button" variant="outline" onClick={handleClose} disabled={isLoading}>
-                Cancel
+                Anuluj
               </Button>
               <Button
                 type="submit"
                 disabled={!title.trim() || isLoading}
                 className="bg-primary hover:bg-primary/90 text-primary-foreground"
               >
-                {isLoading ? "Saving..." : "Save Changes"}
+                {isLoading ? "Zapisywanie..." : "Zapisz zmiany"}
               </Button>
             </div>
           </form>

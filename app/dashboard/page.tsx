@@ -45,8 +45,8 @@ export default function DashboardPage() {
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-foreground">Your Projects</h1>
-              <p className="text-muted-foreground">Manage and collaborate on your music projects</p>
+              <h1 className="text-3xl font-bold text-foreground">Twoje Projekty</h1>
+              <p className="text-muted-foreground">Zarządzaj projektami muzycznymi i współpracuj nad nimi</p>
             </div>
           </div>
 

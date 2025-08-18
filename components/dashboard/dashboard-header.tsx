@@ -52,7 +52,7 @@ export function DashboardHeader() {
               className="bg-primary hover:bg-primary/90 text-primary-foreground"
             >
               <Plus className="h-4 w-4 mr-2" />
-              New Project
+              Nowy Projekt
             </Button>
 
             {/* Notifications */}
@@ -88,16 +88,16 @@ export function DashboardHeader() {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
                   <User className="mr-2 h-4 w-4" />
-                  <span>Profile</span>
+                  <span>Profil</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   <Settings className="mr-2 h-4 w-4" />
-                  <span>Settings</span>
+                  <span>Ustawienia</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout}>
                   <LogOut className="mr-2 h-4 w-4" />
-                  <span>Log out</span>
+                  <span>Wyloguj</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

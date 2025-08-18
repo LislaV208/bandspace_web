@@ -44,7 +44,7 @@ export function ProjectHeader({ projectId }: ProjectHeaderProps) {
   }, [projectId])
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
+    return new Date(dateString).toLocaleDateString("pl-PL", {
       month: "long",
       day: "numeric",
       year: "numeric",
@@ -74,7 +74,7 @@ export function ProjectHeader({ projectId }: ProjectHeaderProps) {
       <header className="border-b border-border bg-card">
         <div className="container mx-auto px-4 py-6">
           <div className="text-center">
-            <h1 className="text-2xl font-bold text-foreground">Project not found</h1>
+            <h1 className="text-2xl font-bold text-foreground">Projekt nie został znaleziony</h1>
           </div>
         </div>
       </header>
@@ -104,7 +104,7 @@ export function ProjectHeader({ projectId }: ProjectHeaderProps) {
                   <div>
                     <h1 className="text-2xl font-bold text-foreground">{project.name}</h1>
                     <p className="text-muted-foreground">
-                      Created {formatDate(project.createdAt)} • {project.users.length} members
+                      Utworzono {formatDate(project.createdAt)} • {project.users.length} członk{project.users.length === 1 ? "" : project.users.length >= 2 && project.users.length <= 4 ? "i" : "ów"}
                     </p>
                   </div>
                 </div>
@@ -112,7 +112,7 @@ export function ProjectHeader({ projectId }: ProjectHeaderProps) {
 
               {/* Members */}
               <div className="flex items-center space-x-3">
-                <span className="text-sm font-medium text-foreground">Members:</span>
+                <span className="text-sm font-medium text-foreground">Członkowie:</span>
                 <div className="flex -space-x-2">
                   {project.users.slice(0, 5).map((user) => (
                     <Avatar key={user.id} className="h-8 w-8 border-2 border-background">
@@ -132,7 +132,7 @@ export function ProjectHeader({ projectId }: ProjectHeaderProps) {
                   )}
                 </div>
                 <Badge variant="secondary" className="ml-2">
-                  {project.users.length} total
+                  {project.users.length} łącznie
                 </Badge>
               </div>
             </div>
@@ -145,7 +145,7 @@ export function ProjectHeader({ projectId }: ProjectHeaderProps) {
                 className="border-border hover:bg-secondary"
               >
                 <UserPlus className="h-4 w-4 mr-2" />
-                Invite
+                Zaproś
               </Button>
 
               <DropdownMenu>
@@ -157,9 +157,9 @@ export function ProjectHeader({ projectId }: ProjectHeaderProps) {
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem onClick={() => setShowSettingsDialog(true)}>
                     <Settings className="mr-2 h-4 w-4" />
-                    Project Settings
+                    Ustawienia Projektu
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="text-destructive">Delete Project</DropdownMenuItem>
+                  <DropdownMenuItem className="text-destructive">Usuń Projekt</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>

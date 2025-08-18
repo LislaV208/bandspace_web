@@ -37,7 +37,7 @@ export function InviteMemberDialog({ open, onOpenChange, projectId, onMemberInvi
       if (error instanceof ApiError) {
         setError(error.message)
       } else {
-        setError("Failed to send invitation. Please try again.")
+        setError("Nie udało się wysłać zaproszenia. Spróbuj ponownie.")
       }
     } finally {
       setIsLoading(false)
@@ -56,9 +56,9 @@ export function InviteMemberDialog({ open, onOpenChange, projectId, onMemberInvi
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[425px] bg-card border-border">
         <DialogHeader>
-          <DialogTitle className="text-foreground">Invite Team Member</DialogTitle>
+          <DialogTitle className="text-foreground">Zaproś Członka Zespołu</DialogTitle>
           <DialogDescription className="text-muted-foreground">
-            Send an invitation to collaborate on this music project.
+            Wyślij zaproszenie do współpracy nad tym projektem muzycznym.
           </DialogDescription>
         </DialogHeader>
 
@@ -68,12 +68,12 @@ export function InviteMemberDialog({ open, onOpenChange, projectId, onMemberInvi
 
             <div className="space-y-2">
               <label htmlFor="email" className="text-sm font-medium text-foreground">
-                Email Address
+                Adres E-mail
               </label>
               <input
                 id="email"
                 type="email"
-                placeholder="member@example.com"
+                placeholder="czlonek@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={isLoading}
@@ -90,14 +90,14 @@ export function InviteMemberDialog({ open, onOpenChange, projectId, onMemberInvi
               disabled={isLoading}
               className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground border border-input rounded-md hover:bg-accent transition-colors"
             >
-              Cancel
+              Anuluj
             </button>
             <button
               type="submit"
               disabled={isLoading || !email.trim()}
               className="px-4 py-2 text-sm font-medium bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              {isLoading ? "Sending..." : "Send Invitation"}
+              {isLoading ? "Wysyłanie..." : "Wyślij Zaproszenie"}
             </button>
           </div>
         </form>

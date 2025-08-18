@@ -57,7 +57,7 @@ export function AudioPlayer({ songs, currentSongIndex, onSongChange, className }
       handleNext()
     }
     const handleError = () => {
-      setError("Failed to load audio file")
+      setError("Nie udało się załadować pliku audio")
       setIsLoading(false)
       setIsPlaying(false)
     }
@@ -99,7 +99,7 @@ export function AudioPlayer({ songs, currentSongIndex, onSongChange, className }
       }
     } catch (error) {
       console.error("Playback error:", error)
-      setError("Playback failed")
+      setError("Nie udało się odtworzyć")
       setIsPlaying(false)
     }
   }
@@ -205,9 +205,9 @@ export function AudioPlayer({ songs, currentSongIndex, onSongChange, className }
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem>Add to Playlist</DropdownMenuItem>
+                <DropdownMenuItem>Dodaj do playlisty</DropdownMenuItem>
                 <DropdownMenuItem>Share Song</DropdownMenuItem>
-                <DropdownMenuItem>Download</DropdownMenuItem>
+                <DropdownMenuItem>Pobierz</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

@@ -49,7 +49,7 @@ export function CreateProjectDialog({ open, onOpenChange, onProjectCreated }: Cr
       if (error instanceof ApiError) {
         setError(error.message)
       } else {
-        setError("Failed to create project. Please try again.")
+        setError("Nie udało się utworzyć projektu. Spróbuj ponownie.")
       }
     } finally {
       setIsLoading(false)
@@ -69,9 +69,9 @@ export function CreateProjectDialog({ open, onOpenChange, onProjectCreated }: Cr
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[425px] bg-card border-border">
         <DialogHeader>
-          <DialogTitle className="text-foreground">Create New Project</DialogTitle>
+          <DialogTitle className="text-foreground">Utwórz Nowy Projekt</DialogTitle>
           <DialogDescription className="text-muted-foreground">
-            Start a new music project to collaborate with your band members.
+            Rozpocznij nowy projekt muzyczny aby współpracować z członkami zespołu.
           </DialogDescription>
         </DialogHeader>
 
@@ -81,11 +81,11 @@ export function CreateProjectDialog({ open, onOpenChange, onProjectCreated }: Cr
 
             <div className="space-y-2">
               <Label htmlFor="name" className="text-foreground">
-                Project Name
+                Nazwa Projektu
               </Label>
               <Input
                 id="name"
-                placeholder="Enter project name"
+                placeholder="Wprowadź nazwę projektu"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className="bg-input border-border"
@@ -96,11 +96,11 @@ export function CreateProjectDialog({ open, onOpenChange, onProjectCreated }: Cr
 
             <div className="space-y-2">
               <Label htmlFor="description" className="text-foreground">
-                Description (Optional)
+                Opis (Opcjonalny)
               </Label>
               <Textarea
                 id="description"
-                placeholder="Describe your project..."
+                placeholder="Opisz swój projekt..."
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 className="bg-input border-border resize-none"
@@ -112,14 +112,14 @@ export function CreateProjectDialog({ open, onOpenChange, onProjectCreated }: Cr
 
           <DialogFooter>
             <Button type="button" variant="outline" onClick={handleClose} disabled={isLoading}>
-              Cancel
+              Anuluj
             </Button>
             <Button
               type="submit"
               disabled={isLoading || !name.trim()}
               className="bg-primary hover:bg-primary/90 text-primary-foreground"
             >
-              {isLoading ? "Creating..." : "Create Project"}
+              {isLoading ? "Tworzenie..." : "Utwórz Projekt"}
             </Button>
           </DialogFooter>
         </form>

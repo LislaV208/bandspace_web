@@ -91,13 +91,13 @@ export function InvitationsPanel() {
       <CardHeader>
         <CardTitle className="flex items-center space-x-2 text-foreground">
           <Mail className="h-5 w-5" />
-          <span>Project Invitations</span>
+          <span>Zaproszenia do Projektów</span>
           <Badge variant="secondary" className="ml-2">
             {invitations.length}
           </Badge>
         </CardTitle>
         <CardDescription className="text-muted-foreground">
-          You have pending invitations to join music projects
+          Masz oczekujące zaproszenia do projektów muzycznych
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -113,7 +113,7 @@ export function InvitationsPanel() {
               <div>
                 <h4 className="font-medium text-foreground">{invitation.project.name}</h4>
                 <p className="text-sm text-muted-foreground">
-                  Invited by {invitation.invitedBy.name || invitation.invitedBy.email}
+                  Zaproszenie od {invitation.invitedBy.name || invitation.invitedBy.email}
                 </p>
               </div>
             </div>
@@ -126,7 +126,7 @@ export function InvitationsPanel() {
                 className="border-border hover:bg-destructive/10 hover:text-destructive hover:border-destructive"
               >
                 <X className="h-4 w-4 mr-1" />
-                Decline
+                Odrzuć
               </Button>
               <Button
                 size="sm"
@@ -134,7 +134,7 @@ export function InvitationsPanel() {
                 className="bg-primary hover:bg-primary/90 text-primary-foreground"
               >
                 <Check className="h-4 w-4 mr-1" />
-                Accept
+                Akceptuj
               </Button>
             </div>
           </div>

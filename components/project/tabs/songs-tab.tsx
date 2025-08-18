@@ -48,7 +48,7 @@ export function SongsTab({ projectId }: SongsTabProps) {
       if (error instanceof ApiError) {
         setError(error.message)
       } else {
-        setError("Failed to load songs. Please try again.")
+        setError("Nie udało się załadować utworów. Spróbuj ponownie.")
       }
       // Fallback to mock data for demo
       const mockSongs: Song[] = [
@@ -136,7 +136,7 @@ export function SongsTab({ projectId }: SongsTabProps) {
   }
 
   const handleDeleteSong = async (songId: number) => {
-    if (!confirm("Are you sure you want to delete this song? This action cannot be undone.")) {
+    if (!confirm("Czy na pewno chcesz usunąć ten utwór? Ta operacja nie może zostać cofnięta.")) {
       return
     }
 
@@ -146,9 +146,9 @@ export function SongsTab({ projectId }: SongsTabProps) {
     } catch (error) {
       console.error("Failed to delete song:", error)
       if (error instanceof ApiError) {
-        alert(`Failed to delete song: ${error.message}`)
+        alert(`Nie udało się usunąć utworu: ${error.message}`)
       } else {
-        alert("Failed to delete song. Please try again.")
+        alert("Nie udało się usunąć utworu. Spróbuj ponownie.")
       }
     }
   }
@@ -200,7 +200,7 @@ export function SongsTab({ projectId }: SongsTabProps) {
       <div className="space-y-6">
         {error && (
           <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-lg">
-            Warning: {error}. Showing cached data.
+            Ostrzeżenie: {error}. Wyświetlanie zapisanych danych.
           </div>
         )}
 
@@ -210,7 +210,7 @@ export function SongsTab({ projectId }: SongsTabProps) {
             <div className="relative flex-1 max-w-sm">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search songs..."
+                placeholder="Szukaj utworów..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10 bg-input border-border"
@@ -223,7 +223,7 @@ export function SongsTab({ projectId }: SongsTabProps) {
             className="bg-primary hover:bg-primary/90 text-primary-foreground"
           >
             <Upload className="h-4 w-4 mr-2" />
-            Upload Song
+            Prześlij Utwór
           </Button>
         </div>
 
@@ -242,10 +242,10 @@ export function SongsTab({ projectId }: SongsTabProps) {
           <div className="text-center py-12">
             <Music className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-foreground mb-2">
-              {searchQuery ? "No songs found" : "No songs yet"}
+              {searchQuery ? "Nie znaleziono utworów" : "Brak utworów"}
             </h3>
             <p className="text-muted-foreground mb-4">
-              {searchQuery ? "Try adjusting your search terms" : "Upload your first song to get started"}
+              {searchQuery ? "Spróbuj zmienić frazy wyszukiwania" : "Prześlij swój pierwszy utwór aby zacząć"}
             </p>
             {!searchQuery && (
               <Button
@@ -253,7 +253,7 @@ export function SongsTab({ projectId }: SongsTabProps) {
                 className="bg-primary hover:bg-primary/90 text-primary-foreground"
               >
                 <Upload className="h-4 w-4 mr-2" />
-                Upload Song
+                Prześlij Utwór
               </Button>
             )}
           </div>
@@ -278,7 +278,7 @@ export function SongsTab({ projectId }: SongsTabProps) {
                       <div className="space-y-1">
                         <h3 className="font-semibold text-foreground">{song.title}</h3>
                         <div className="flex items-center space-x-4 text-sm text-muted-foreground">
-                          <span>By {song.createdBy.name || song.createdBy.email}</span>
+                          <span>Od {song.createdBy.name || song.createdBy.email}</span>
                           {song.duration && <span>{formatDuration(song.duration)}</span>}
                           {song.bpm && <span>{song.bpm} BPM</span>}
                           <span>{song.file?.size ? formatFileSize(song.file.size) : "Unknown size"}</span>
@@ -291,12 +291,12 @@ export function SongsTab({ projectId }: SongsTabProps) {
                           </Badge>
                           {song.lyrics && (
                             <Badge variant="outline" className="text-xs">
-                              Has Lyrics
+                              Ma tekst
                             </Badge>
                           )}
                           {currentSong?.id === song.id && (
                             <Badge variant="default" className="text-xs bg-primary">
-                              Now Playing
+                              Odtwarzane
                             </Badge>
                           )}
                         </div>
@@ -312,15 +312,15 @@ export function SongsTab({ projectId }: SongsTabProps) {
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem onClick={() => handleViewDetails(song)}>
                           <Info className="mr-2 h-4 w-4" />
-                          View Details
+                          Zobacz szczegóły
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => handleEditSong(song)}>
                           <Edit className="mr-2 h-4 w-4" />
-                          Edit Details
+                          Edytuj szczegóły
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => handleDeleteSong(song.id)} className="text-destructive">
                           <Trash2 className="mr-2 h-4 w-4" />
-                          Delete
+                          Usuń
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>

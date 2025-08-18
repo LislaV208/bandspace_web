@@ -13,13 +13,13 @@ export function ProjectTabs({ projectId }: ProjectTabsProps) {
     <Tabs defaultValue="songs" className="w-full">
       <TabsList className="grid w-full grid-cols-3 bg-muted">
         <TabsTrigger value="songs" className="data-[state=active]:bg-background">
-          Songs
+          Utwory
         </TabsTrigger>
         <TabsTrigger value="members" className="data-[state=active]:bg-background">
-          Members
+          Członkowie
         </TabsTrigger>
         <TabsTrigger value="overview" className="data-[state=active]:bg-background">
-          Overview
+          Przegląd
         </TabsTrigger>
       </TabsList>
 

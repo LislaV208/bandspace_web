@@ -40,7 +40,7 @@ export function LoginForm() {
       if (error instanceof ApiError) {
         setError(error.message);
       } else {
-        setError("Google login failed. Please try again.");
+        setError("Logowanie przez Google nie powiodło się. Spróbuj ponownie.");
       }
     }
   };
@@ -57,12 +57,12 @@ export function LoginForm() {
       console.error("Login failed:", error);
       if (error instanceof ApiError) {
         if (error.status === 401) {
-          setError("Invalid email or password");
+          setError("Nieprawidłowy e-mail lub hasło");
         } else {
           setError(error.message);
         }
       } else {
-        setError("Login failed. Please try again.");
+        setError("Logowanie nie powiodło się. Spróbuj ponownie.");
       }
     }
   };
@@ -70,9 +70,9 @@ export function LoginForm() {
   return (
     <Card className="border-border bg-card">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl text-center">Sign in</CardTitle>
+        <CardTitle className="text-2xl text-center">Zaloguj się</CardTitle>
         <CardDescription className="text-center text-muted-foreground">
-          Choose your preferred sign in method
+          Wybierz preferowany sposób logowania
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -91,7 +91,7 @@ export function LoginForm() {
           disabled={isLoading}
         >
           <GoogleIcon className="mr-2 h-5 w-5" />
-          Continue with Google
+          Kontynuuj z Google
         </Button>
 
         <div className="relative">
@@ -100,7 +100,7 @@ export function LoginForm() {
           </div>
           <div className="relative flex justify-center text-xs uppercase">
             <span className="bg-card px-2 text-muted-foreground">
-              Or continue with
+              Lub kontynuuj z
             </span>
           </div>
         </div>
@@ -108,13 +108,13 @@ export function LoginForm() {
         {/* Email/Password Form */}
         <form onSubmit={handleEmailLogin} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">E-mail</Label>
             <div className="relative">
               <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
                 id="email"
                 type="email"
-                placeholder="Enter your email"
+                placeholder="Wprowadź swój e-mail"
                 className="pl-10 h-12 bg-input border-border"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -125,13 +125,13 @@ export function LoginForm() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">Hasło</Label>
             <div className="relative">
               <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
                 id="password"
                 type={showPassword ? "text" : "password"}
-                placeholder="Enter your password"
+                placeholder="Wprowadź swoje hasło"
                 className="pl-10 pr-10 h-12 bg-input border-border"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -160,7 +160,7 @@ export function LoginForm() {
             className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground"
             disabled={isLoading || !email.trim() || !password.trim()}
           >
-            {isLoading ? "Signing in..." : "Sign in"}
+            {isLoading ? "Logowanie..." : "Zaloguj się"}
           </Button>
         </form>
 
@@ -169,15 +169,15 @@ export function LoginForm() {
             variant="link"
             className="text-accent hover:text-accent/80 p-0"
           >
-            Forgot your password?
+            Zapomniałeś hasła?
           </Button>
           <div className="text-sm text-muted-foreground">
-            Don&apos;t have an account?{" "}
+            Nie masz konta?{" "}
             <Button
               variant="link"
               className="text-accent hover:text-accent/80 p-0"
             >
-              Sign up
+              Zarejestruj się
             </Button>
           </div>
         </div>

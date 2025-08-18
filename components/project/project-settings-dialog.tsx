@@ -46,7 +46,7 @@ export function ProjectSettingsDialog({ open, onOpenChange, project, onProjectUp
   }
 
   const handleDeleteProject = async () => {
-    if (!confirm("Are you sure you want to delete this project? This action cannot be undone.")) {
+    if (!confirm("Czy na pewno chcesz usunąć ten projekt? Ta operacja nie może zostać cofnięta.")) {
       return
     }
 
@@ -72,9 +72,9 @@ export function ProjectSettingsDialog({ open, onOpenChange, project, onProjectUp
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px] bg-card border-border">
         <DialogHeader>
-          <DialogTitle className="text-foreground">Project Settings</DialogTitle>
+          <DialogTitle className="text-foreground">Ustawienia Projektu</DialogTitle>
           <DialogDescription className="text-muted-foreground">
-            Manage your project settings and preferences.
+            Zarządzaj ustawieniami i preferencjami projektu.
           </DialogDescription>
         </DialogHeader>
 
@@ -84,11 +84,11 @@ export function ProjectSettingsDialog({ open, onOpenChange, project, onProjectUp
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="name" className="text-foreground">
-                  Project Name
+                  Nazwa Projektu
                 </Label>
                 <Input
                   id="name"
-                  placeholder="Enter project name"
+                  placeholder="Wprowadź nazwę projektu"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className="bg-input border-border"
@@ -101,7 +101,7 @@ export function ProjectSettingsDialog({ open, onOpenChange, project, onProjectUp
                 disabled={isLoading || !name.trim() || name === project.name}
                 className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
               >
-                {isLoading ? "Updating..." : "Update Project"}
+                {isLoading ? "Aktualizowanie..." : "Zaktualizuj Projekt"}
               </Button>
             </div>
           </form>
@@ -111,12 +111,12 @@ export function ProjectSettingsDialog({ open, onOpenChange, project, onProjectUp
           {/* Danger Zone */}
           <div className="space-y-4">
             <div>
-              <h4 className="text-sm font-medium text-foreground">Danger Zone</h4>
-              <p className="text-sm text-muted-foreground">Irreversible and destructive actions.</p>
+              <h4 className="text-sm font-medium text-foreground">Strefa Niebezpieczeństwa</h4>
+              <p className="text-sm text-muted-foreground">Nieodwracalne i destruktywne działania.</p>
             </div>
 
             <Button variant="destructive" onClick={handleDeleteProject} disabled={isDeleting} className="w-full">
-              {isDeleting ? "Deleting..." : "Delete Project"}
+              {isDeleting ? "Usuwanie..." : "Usuń Projekt"}
             </Button>
           </div>
         </div>

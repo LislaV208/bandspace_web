@@ -31,7 +31,7 @@ export function ProjectsGrid() {
       if (error instanceof ApiError) {
         setError(error.message)
       } else {
-        setError("Failed to load projects. Please try again.")
+        setError("Nie udało się załadować projektów. Spróbuj ponownie.")
       }
       // Fallback to mock data for demo
       const mockProjects: Project[] = [
@@ -74,7 +74,7 @@ export function ProjectsGrid() {
   }
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
+    return new Date(dateString).toLocaleDateString("pl-PL", {
       month: "short",
       day: "numeric",
       year: "numeric",
@@ -86,7 +86,7 @@ export function ProjectsGrid() {
   }
 
   const handleDeleteProject = async (projectId: number, projectName: string) => {
-    if (!confirm(`Are you sure you want to delete "${projectName}"? This action cannot be undone.`)) {
+    if (!confirm(`Czy na pewno chcesz usunąć "${projectName}"? Ta operacja nie może zostać cofnięta.`)) {
       return
     }
 
@@ -96,9 +96,9 @@ export function ProjectsGrid() {
     } catch (error) {
       console.error("Failed to delete project:", error)
       if (error instanceof ApiError) {
-        alert(`Failed to delete project: ${error.message}`)
+        alert(`Nie udało się usunąć projektu: ${error.message}`)
       } else {
-        alert("Failed to delete project. Please try again.")
+        alert("Nie udało się usunąć projektu. Spróbuj ponownie.")
       }
     }
   }
@@ -128,10 +128,10 @@ export function ProjectsGrid() {
     return (
       <div className="text-center py-12">
         <Music className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-        <h3 className="text-lg font-semibold text-foreground mb-2">Failed to load projects</h3>
+        <h3 className="text-lg font-semibold text-foreground mb-2">Nie udało się załadować projektów</h3>
         <p className="text-muted-foreground mb-4">{error}</p>
         <Button onClick={loadProjects} className="bg-primary hover:bg-primary/90 text-primary-foreground">
-          Try Again
+          Spróbuj Ponownie
         </Button>
       </div>
     )
@@ -141,8 +141,8 @@ export function ProjectsGrid() {
     return (
       <div className="text-center py-12">
         <Music className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-        <h3 className="text-lg font-semibold text-foreground mb-2">No projects yet</h3>
-        <p className="text-muted-foreground mb-4">Create your first project to start collaborating with your band</p>
+        <h3 className="text-lg font-semibold text-foreground mb-2">Brak projektów</h3>
+        <p className="text-muted-foreground mb-4">Utwórz swój pierwszy projekt aby zacząć współpracę z zespołem</p>
       </div>
     )
   }
@@ -151,7 +151,7 @@ export function ProjectsGrid() {
     <div className="space-y-4">
       {error && (
         <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-lg">
-          Warning: {error}. Showing cached data.
+          Ostrzeżenie: {error}. Wyświetlanie zapisanych danych.
         </div>
       )}
 
@@ -169,7 +169,7 @@ export function ProjectsGrid() {
                     {project.name}
                   </CardTitle>
                   <CardDescription className="text-muted-foreground">
-                    Created {formatDate(project.createdAt)}
+                    Utworzono {formatDate(project.createdAt)}
                   </CardDescription>
                 </div>
                 <DropdownMenu>
@@ -183,13 +183,13 @@ export function ProjectsGrid() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => handleProjectClick(project.id)}>Edit Project</DropdownMenuItem>
-                    <DropdownMenuItem>Invite Members</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleProjectClick(project.id)}>Edytuj Projekt</DropdownMenuItem>
+                    <DropdownMenuItem>Zaproś Członków</DropdownMenuItem>
                     <DropdownMenuItem
                       className="text-destructive"
                       onClick={() => handleDeleteProject(project.id, project.name)}
                     >
-                      Delete Project
+                      Usuń Projekt
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -200,12 +200,12 @@ export function ProjectsGrid() {
                 <div className="flex items-center space-x-1">
                   <Users className="h-4 w-4" />
                   <span>
-                    {project.users.length} member{project.users.length !== 1 ? "s" : ""}
+                    {project.users.length} członk{project.users.length === 1 ? "" : project.users.length >= 2 && project.users.length <= 4 ? "i" : "ów"}
                   </span>
                 </div>
                 <div className="flex items-center space-x-1">
                   <Calendar className="h-4 w-4" />
-                  <span>Updated {formatDate(project.updatedAt)}</span>
+                  <span>Zaktualizowano {formatDate(project.updatedAt)}</span>
                 </div>
               </div>
 
@@ -217,7 +217,7 @@ export function ProjectsGrid() {
                 ))}
                 {project.users.length > 3 && (
                   <Badge variant="secondary" className="text-xs">
-                    +{project.users.length - 3} more
+                    +{project.users.length - 3} więcej
                   </Badge>
                 )}
               </div>
