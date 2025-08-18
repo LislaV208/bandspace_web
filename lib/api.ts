@@ -93,6 +93,12 @@ class ApiClient {
     });
   }
 
+  // Google Web Flow - redirect to backend OAuth endpoint
+  redirectToGoogleAuth() {
+    window.location.href = `${this.baseUrl}/auth/google`;
+  }
+
+  // Google Mobile Flow - for mobile apps with ID token
   async googleLogin(token: string) {
     return this.request("/auth/google/mobile", {
       method: "POST",
@@ -132,6 +138,11 @@ class ApiClient {
       method: "PATCH",
       body: JSON.stringify({ currentPassword, newPassword }),
     });
+  }
+
+  // User endpoints
+  async getUserMe() {
+    return this.request("/users/me");
   }
 
   // Projects endpoints

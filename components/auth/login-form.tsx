@@ -14,9 +14,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/contexts/auth-context";
-import { ApiError } from "@/lib/api";
+import { ApiError, apiClient } from "@/lib/api";
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { GoogleIcon } from "./google-icon";
@@ -35,10 +34,11 @@ export function LoginForm() {
     return null;
   }
 
-  const handleGoogleLogin = async () => {
+  const handleGoogleLogin = () => {
     try {
       setError(null);
-      await signIn("google", { callbackUrl: "/dashboard" });
+      // Użyj elegancką metodę z API client
+      apiClient.redirectToGoogleAuth();
     } catch (error) {
       console.error("Google login failed:", error);
       setError("Logowanie przez Google nie powiodło się. Spróbuj ponownie.");
