@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
 import { apiClient } from "@/lib/api";
 import type { User } from "@/lib/types";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 
 export default function AuthSuccessPage() {
   const router = useRouter();
@@ -13,8 +13,8 @@ export default function AuthSuccessPage() {
     const handleAuthSuccess = async () => {
       try {
         // Pobierz tokeny z query parameters
-        const accessToken = searchParams.get("accessToken");
-        const refreshToken = searchParams.get("refreshToken");
+        const accessToken = searchParams.get("token");
+        const refreshToken = searchParams.get("refresh");
 
         if (!accessToken || !refreshToken) {
           throw new Error("Brak wymaganych tokenów autoryzacji");
@@ -24,7 +24,7 @@ export default function AuthSuccessPage() {
         apiClient.setAccessToken(accessToken);
 
         // Pobierz dane użytkownika
-        const userData = await apiClient.getUserMe() as User;
+        const userData = (await apiClient.getUserMe()) as User;
 
         // Stwórz sesję
         const session = {
@@ -36,16 +36,29 @@ export default function AuthSuccessPage() {
         // Zapisz sesję do localStorage
         localStorage.setItem("bandspace_session", JSON.stringify(session));
 
+        // Wywołaj custom event żeby powiadomić AuthContext o nowej sesji
+        window.dispatchEvent(new CustomEvent('bandspace-session-updated', { 
+          detail: session 
+        }));
+
         console.log("Google login successful:", userData.email);
+
+        // Małe opóźnienie żeby AuthContext zdążył załadować dane
+        await new Promise(resolve => setTimeout(resolve, 100));
 
         // Przekieruj do dashboardu
         router.replace("/dashboard");
       } catch (error) {
         console.error("Error handling auth success:", error);
         // Przekieruj do strony błędu
-        router.replace("/auth/error?message=" + encodeURIComponent(
-          error instanceof Error ? error.message : "Nieznany błąd podczas logowania"
-        ));
+        router.replace(
+          "/auth/error?message=" +
+            encodeURIComponent(
+              error instanceof Error
+                ? error.message
+                : "Nieznany błąd podczas logowania"
+            )
+        );
       }
     };
 

@@ -67,8 +67,20 @@ export function AuthProvider({ children }: AuthProviderProps) {
     initSession()
   }, [clearSession])
 
-  // Listen for storage changes (e.g., when auth success page saves session)
+  // Listen for custom session update events (from auth success page)
   useEffect(() => {
+    const handleSessionUpdate = (e: CustomEvent) => {
+      try {
+        const session = e.detail as Session
+        apiClient.setAccessToken(session.accessToken)
+        setUser(session.user)
+        setIsLoading(false)
+        console.log("Session updated from custom event:", session.user.email)
+      } catch (error) {
+        console.error("Failed to handle session update event:", error)
+      }
+    }
+
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === "bandspace_session" && e.newValue) {
         try {
@@ -82,8 +94,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
       }
     }
 
+    window.addEventListener("bandspace-session-updated", handleSessionUpdate as EventListener)
     window.addEventListener("storage", handleStorageChange)
-    return () => window.removeEventListener("storage", handleStorageChange)
+    
+    return () => {
+      window.removeEventListener("bandspace-session-updated", handleSessionUpdate as EventListener)
+      window.removeEventListener("storage", handleStorageChange)
+    }
   }, [])
 
   // Auto-refresh token every 50 minutes

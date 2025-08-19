@@ -95,7 +95,9 @@ class ApiClient {
 
   // Google Web Flow - redirect to backend OAuth endpoint
   redirectToGoogleAuth() {
-    window.location.href = `${this.baseUrl}/auth/google`;
+    const isDev = process.env.NODE_ENV === 'development' || window.location.hostname === 'localhost';
+    const devParam = isDev ? '?dev=true' : '';
+    window.location.href = `${this.baseUrl}/auth/google${devParam}`;
   }
 
   // Google Mobile Flow - for mobile apps with ID token
