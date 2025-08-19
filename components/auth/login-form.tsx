@@ -16,7 +16,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -113,7 +112,9 @@ export function LoginForm() {
       if (error instanceof ApiError) {
         setResetError(error.message);
       } else {
-        setResetError("Nie udało się wysłać emaila resetującego. Spróbuj ponownie.");
+        setResetError(
+          "Nie udało się wysłać emaila resetującego. Spróbuj ponownie."
+        );
       }
     } finally {
       setResetLoading(false);
@@ -317,7 +318,7 @@ export function LoginForm() {
                   }`}
                 >
                   {isLoginView && (
-                    <Button 
+                    <Button
                       variant="link"
                       onClick={() => {
                         setShowResetModal(true);
@@ -386,13 +387,11 @@ export function LoginForm() {
               <div className="space-y-2">
                 <h3 className="font-semibold text-lg">Email wysłany!</h3>
                 <p className="text-muted-foreground text-sm">
-                  Sprawdź swoją skrzynkę pocztową i kliknij w link resetujący hasło.
+                  Sprawdź swoją skrzynkę pocztową i kliknij w link resetujący
+                  hasło.
                 </p>
               </div>
-              <Button 
-                onClick={handleResetModalClose}
-                className="w-full"
-              >
+              <Button onClick={handleResetModalClose} className="w-full">
                 Zamknij
               </Button>
             </div>
