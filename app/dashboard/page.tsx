@@ -22,10 +22,7 @@ export default function DashboardPage() {
     null
   );
 
-  console.log('refreshProjects:', refreshProjects);
-
   const handleSetRefreshProjects = useCallback((refreshFn: () => void) => {
-    console.log('Setting refresh function:', refreshFn);
     setRefreshProjects(() => refreshFn);
   }, []);
 
@@ -87,7 +84,7 @@ export default function DashboardPage() {
                       }
                     }}
                     disabled={!refreshProjects}
-                    className="h-14 w-14 text-muted-foreground hover:text-foreground disabled:opacity-50"
+                    className="h-14 w-14 hover:text-foreground disabled:opacity-50"
                   >
                     <RefreshCw style={{ width: "24px", height: "24px" }} />
                   </Button>

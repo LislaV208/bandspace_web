@@ -25,11 +25,8 @@ export function ProjectsGrid({ onRefresh }: ProjectsGridProps) {
   }, []);
 
   useEffect(() => {
-    console.log('ProjectsGrid: onRefresh effect triggered', { onRefresh });
     if (onRefresh) {
-      console.log('ProjectsGrid: calling onRefresh with loadProjects wrapper');
       onRefresh(() => {
-        console.log('ProjectsGrid: refresh wrapper called');
         loadProjects();
       });
     }
