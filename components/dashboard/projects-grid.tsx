@@ -10,7 +10,11 @@ import { Music } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export function ProjectsGrid() {
+interface ProjectsGridProps {
+  onRefresh?: (refreshFn: () => void) => void;
+}
+
+export function ProjectsGrid({ onRefresh }: ProjectsGridProps) {
   const router = useRouter();
   const [projects, setProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -19,6 +23,17 @@ export function ProjectsGrid() {
   useEffect(() => {
     loadProjects();
   }, []);
+
+  useEffect(() => {
+    console.log('ProjectsGrid: onRefresh effect triggered', { onRefresh });
+    if (onRefresh) {
+      console.log('ProjectsGrid: calling onRefresh with loadProjects wrapper');
+      onRefresh(() => {
+        console.log('ProjectsGrid: refresh wrapper called');
+        loadProjects();
+      });
+    }
+  }, [onRefresh]);
 
   const loadProjects = async () => {
     try {

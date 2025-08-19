@@ -1,6 +1,5 @@
 "use client";
 
-import { UserAvatar } from "@/components/ui/user-avatar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -10,8 +9,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { UserAvatar } from "@/components/ui/user-avatar";
 import { useAuth } from "@/contexts/auth-context";
-import { Bell, LogOut, Music, Plus, Settings, User } from "lucide-react";
+import { LogOut, Music, Plus, Settings, User } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { CreateProjectDialog } from "./create-project-dialog";
@@ -53,12 +53,6 @@ export function DashboardHeader() {
             >
               <Plus className="h-4 w-4 mr-2" />
               Nowy Projekt
-            </Button>
-
-            {/* Notifications */}
-            <Button variant="ghost" size="icon" className="relative">
-              <Bell className="h-5 w-5" />
-              <span className="absolute -top-1 -right-1 h-3 w-3 bg-destructive rounded-full text-xs"></span>
             </Button>
 
             {/* User Menu */}

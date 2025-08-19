@@ -2,14 +2,32 @@
 
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import { ProjectsGrid } from "@/components/dashboard/projects-grid";
+import { Button } from "@/components/ui/button";
 import { LoadingSpinner } from "@/components/ui/loading-indicator";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useAuth } from "@/contexts/auth-context";
+import { RefreshCw } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export default function DashboardPage() {
   const { isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
+  const [refreshProjects, setRefreshProjects] = useState<(() => void) | null>(
+    null
+  );
+
+  console.log('refreshProjects:', refreshProjects);
+
+  const handleSetRefreshProjects = useCallback((refreshFn: () => void) => {
+    console.log('Setting refresh function:', refreshFn);
+    setRefreshProjects(() => refreshFn);
+  }, []);
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -47,7 +65,7 @@ export default function DashboardPage() {
         {/* Projects Section */}
         <div className="space-y-6">
           <div className="flex items-center justify-between">
-            <div>
+            <div className="flex flex-col space-y-2">
               <h1 className="text-3xl font-bold text-foreground">
                 Moje projekty
               </h1>
@@ -55,9 +73,38 @@ export default function DashboardPage() {
                 Zarządzaj swoimi projektami muzycznymi
               </p>
             </div>
+
+            {/* Refresh Button */}
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => {
+                      if (refreshProjects) {
+                        refreshProjects();
+                      }
+                    }}
+                    disabled={!refreshProjects}
+                    className="h-14 w-14 text-muted-foreground hover:text-foreground disabled:opacity-50"
+                  >
+                    <RefreshCw style={{ width: "24px", height: "24px" }} />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent
+                  side="bottom"
+                  className="bg-muted/90 text-foreground border-border/50 shadow-sm"
+                  arrowClassName="bg-muted/90 fill-muted/90"
+                  sideOffset={-4}
+                >
+                  <p>Odśwież</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
 
-          <ProjectsGrid />
+          <ProjectsGrid onRefresh={handleSetRefreshProjects} />
         </div>
       </main>
     </div>
