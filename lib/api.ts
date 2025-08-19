@@ -56,12 +56,12 @@ class ApiClient {
     // Check if response has content to parse
     const contentType = response.headers.get("content-type");
     const contentLength = response.headers.get("content-length");
-    
+
     // If no content or content-length is 0, return empty object
     if (contentLength === "0" || response.status === 204) {
       return {} as T;
     }
-    
+
     // If content-type is not JSON, return empty object
     if (!contentType || !contentType.includes("application/json")) {
       return {} as T;
@@ -70,7 +70,7 @@ class ApiClient {
     // Try to parse JSON, return empty object if it fails
     try {
       const text = await response.text();
-      if (!text || text.trim() === '') {
+      if (!text || text.trim() === "") {
         return {} as T;
       }
       return JSON.parse(text) as T;
@@ -180,10 +180,10 @@ class ApiClient {
     return this.request("/projects");
   }
 
-  async createProject(name: string, description?: string) {
+  async createProject(name: string): Promise<Project> {
     return this.request("/projects", {
       method: "POST",
-      body: JSON.stringify({ name, description }),
+      body: JSON.stringify({ name }),
     });
   }
 

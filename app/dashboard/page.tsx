@@ -2,6 +2,7 @@
 
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import { ProjectsGrid } from "@/components/dashboard/projects-grid";
+import { CreateProjectDialog } from "@/components/dashboard/create-project-dialog";
 import { Button } from "@/components/ui/button";
 import { LoadingSpinner } from "@/components/ui/loading-indicator";
 import {
@@ -11,7 +12,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useAuth } from "@/contexts/auth-context";
-import { RefreshCw } from "lucide-react";
+import { RefreshCw, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
@@ -21,6 +22,7 @@ export default function DashboardPage() {
   const [refreshProjects, setRefreshProjects] = useState<(() => void) | null>(
     null
   );
+  const [showCreateProject, setShowCreateProject] = useState(false);
 
   const handleSetRefreshProjects = useCallback((refreshFn: () => void) => {
     setRefreshProjects(() => refreshFn);
@@ -71,39 +73,55 @@ export default function DashboardPage() {
               </p>
             </div>
 
-            {/* Refresh Button */}
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => {
-                      if (refreshProjects) {
-                        refreshProjects();
-                      }
-                    }}
-                    disabled={!refreshProjects}
-                    className="h-14 w-14 hover:text-foreground disabled:opacity-50"
+            <div className="flex items-center space-x-2">
+              {/* Create Project Button */}
+              <Button
+                onClick={() => setShowCreateProject(true)}
+                className="bg-primary hover:bg-primary/90 text-primary-foreground"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Nowy Projekt
+              </Button>
+
+              {/* Refresh Button */}
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => {
+                        if (refreshProjects) {
+                          refreshProjects();
+                        }
+                      }}
+                      disabled={!refreshProjects}
+                      className="h-14 w-14 hover:text-foreground disabled:opacity-50"
+                    >
+                      <RefreshCw style={{ width: "24px", height: "24px" }} />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent
+                    side="bottom"
+                    className="bg-muted/90 text-foreground border-border/50 shadow-sm"
+                    arrowClassName="bg-muted/90 fill-muted/90"
+                    sideOffset={-4}
                   >
-                    <RefreshCw style={{ width: "24px", height: "24px" }} />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent
-                  side="bottom"
-                  className="bg-muted/90 text-foreground border-border/50 shadow-sm"
-                  arrowClassName="bg-muted/90 fill-muted/90"
-                  sideOffset={-4}
-                >
-                  <p>Odśwież</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+                    <p>Odśwież</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
           </div>
 
           <ProjectsGrid onRefresh={handleSetRefreshProjects} />
         </div>
       </main>
+
+      <CreateProjectDialog
+        open={showCreateProject}
+        onOpenChange={setShowCreateProject}
+      />
     </div>
   );
 }

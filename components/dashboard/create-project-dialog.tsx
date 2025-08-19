@@ -1,87 +1,92 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { apiClient, ApiError } from "@/lib/api"
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { apiClient, ApiError } from "@/lib/api";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface CreateProjectDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  onProjectCreated?: () => void
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onProjectCreated?: () => void;
 }
 
-export function CreateProjectDialog({ open, onOpenChange, onProjectCreated }: CreateProjectDialogProps) {
-  const [name, setName] = useState("")
-  const [description, setDescription] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+export function CreateProjectDialog({
+  open,
+  onOpenChange,
+  onProjectCreated,
+}: CreateProjectDialogProps) {
+  const [name, setName] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!name.trim()) return
+    e.preventDefault();
+    if (!name.trim()) return;
 
-    setIsLoading(true)
-    setError(null)
+    setIsLoading(true);
+    setError(null);
 
     try {
-      await apiClient.createProject(name.trim(), description.trim() || undefined)
+      const project = await apiClient.createProject(name.trim());
 
       // Reset form and close dialog
-      setName("")
-      setDescription("")
-      onOpenChange(false)
-      onProjectCreated?.()
+      setName("");
+      onOpenChange(false);
+      onProjectCreated?.();
+      
+      // Navigate to the new project page
+      router.push(`/project/${project.id}`);
     } catch (error) {
-      console.error("Failed to create project:", error)
+      console.error("Failed to create project:", error);
       if (error instanceof ApiError) {
-        setError(error.message)
+        setError(error.message);
       } else {
-        setError("Nie udało się utworzyć projektu. Spróbuj ponownie.")
+        setError("Nie udało się utworzyć projektu. Spróbuj ponownie.");
       }
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleClose = () => {
     if (!isLoading) {
-      setName("")
-      setDescription("")
-      setError(null)
-      onOpenChange(false)
+      setName("");
+      setError(null);
+      onOpenChange(false);
     }
-  }
+  };
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[425px] bg-card border-border">
         <DialogHeader>
-          <DialogTitle className="text-foreground">Utwórz Nowy Projekt</DialogTitle>
-          <DialogDescription className="text-muted-foreground">
-            Rozpocznij nowy projekt muzyczny aby współpracować z członkami zespołu.
-          </DialogDescription>
+          <DialogTitle className="text-foreground">Nowy Projekt</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit}>
           <div className="grid gap-4 py-4">
-            {error && <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-lg">{error}</div>}
+            {error && (
+              <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-lg">
+                {error}
+              </div>
+            )}
 
             <div className="space-y-2">
               <Label htmlFor="name" className="text-foreground">
-                Nazwa Projektu
+                Nazwa projektu
               </Label>
               <Input
                 id="name"
@@ -93,25 +98,15 @@ export function CreateProjectDialog({ open, onOpenChange, onProjectCreated }: Cr
                 required
               />
             </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="description" className="text-foreground">
-                Opis (Opcjonalny)
-              </Label>
-              <Textarea
-                id="description"
-                placeholder="Opisz swój projekt..."
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className="bg-input border-border resize-none"
-                disabled={isLoading}
-                rows={3}
-              />
-            </div>
           </div>
 
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={handleClose} disabled={isLoading}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleClose}
+              disabled={isLoading}
+            >
               Anuluj
             </Button>
             <Button
@@ -125,5 +120,5 @@ export function CreateProjectDialog({ open, onOpenChange, onProjectCreated }: Cr
         </form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

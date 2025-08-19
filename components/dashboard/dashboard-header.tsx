@@ -11,15 +11,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { UserAvatar } from "@/components/ui/user-avatar";
 import { useAuth } from "@/contexts/auth-context";
-import { LogOut, Music, Plus, Settings, User } from "lucide-react";
+import { LogOut, Music, Settings, User } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { CreateProjectDialog } from "./create-project-dialog";
 
 export function DashboardHeader() {
   const { user, logout } = useAuth();
   const router = useRouter();
-  const [showCreateProject, setShowCreateProject] = useState(false);
 
   const handleLogout = async () => {
     try {
@@ -31,32 +28,22 @@ export function DashboardHeader() {
   };
 
   return (
-    <>
-      <header className="border-b border-border bg-card">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          {/* Logo */}
-          <div className="flex items-center space-x-3">
-            <div className="bg-primary rounded-xl p-2">
-              <Music className="h-6 w-6 text-primary-foreground" />
-            </div>
-            <div>
-              <h1 className="text-xl font-bold text-foreground">BandSpace</h1>
-            </div>
+    <header className="border-b border-border bg-card">
+      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+        {/* Logo */}
+        <div className="flex items-center space-x-3">
+          <div className="bg-primary rounded-xl p-2">
+            <Music className="h-6 w-6 text-primary-foreground" />
           </div>
+          <div>
+            <h1 className="text-xl font-bold text-foreground">BandSpace</h1>
+          </div>
+        </div>
 
-          {/* Actions */}
-          <div className="flex items-center space-x-4">
-            {/* Create Project Button */}
-            <Button
-              onClick={() => setShowCreateProject(true)}
-              className="bg-primary hover:bg-primary/90 text-primary-foreground"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              Nowy Projekt
-            </Button>
-
-            {/* User Menu */}
-            <DropdownMenu>
+        {/* Actions */}
+        <div className="flex items-center space-x-4">
+          {/* User Menu */}
+          <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
@@ -92,14 +79,8 @@ export function DashboardHeader() {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-          </div>
         </div>
-      </header>
-
-      <CreateProjectDialog
-        open={showCreateProject}
-        onOpenChange={setShowCreateProject}
-      />
-    </>
+      </div>
+    </header>
   );
 }
