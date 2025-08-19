@@ -20,13 +20,16 @@ import { useState } from "react";
 import { GoogleIcon } from "./google-icon";
 
 export function LoginForm() {
-  const { login, isLoading, isAuthenticated } = useAuth();
+  const { login, register, isLoading, isAuthenticated } = useAuth();
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showEmailLogin, setShowEmailLogin] = useState(false);
   const [isTransitioningToGoogle, setIsTransitioningToGoogle] = useState(false);
+  const [isLoginView, setIsLoginView] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
 
   // Redirect if already authenticated
@@ -46,24 +49,39 @@ export function LoginForm() {
     }
   };
 
-  const handleEmailLogin = async (e: React.FormEvent) => {
+  const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim() || !password.trim()) return;
 
+    if (!isLoginView && password !== confirmPassword) {
+      setError("Hasła nie są identyczne");
+      return;
+    }
+
     try {
       setError(null);
-      await login(email, password);
+      if (isLoginView) {
+        await login(email, password);
+      } else {
+        await register(email, password);
+      }
       router.push("/dashboard");
     } catch (error) {
-      console.error("Login failed:", error);
+      console.error("Auth failed:", error);
       if (error instanceof ApiError) {
         if (error.status === 401) {
           setError("Nieprawidłowy e-mail lub hasło");
+        } else if (error.status === 409) {
+          setError("Użytkownik z tym adresem e-mail już istnieje");
         } else {
           setError(error.message);
         }
       } else {
-        setError("Logowanie nie powiodło się. Spróbuj ponownie.");
+        setError(
+          isLoginView
+            ? "Logowanie nie powiodło się. Spróbuj ponownie."
+            : "Rejestracja nie powiodła się. Spróbuj ponownie."
+        );
       }
     }
   };
@@ -72,10 +90,12 @@ export function LoginForm() {
     <Card className="border-border bg-card shadow-2xl shadow-black/20 rounded-3xl">
       <CardHeader className="space-y-2 pb-2 pt-8 px-8">
         <CardTitle className="text-3xl text-center font-bold tracking-tight">
-          Witaj z powrotem!
+          {isLoginView ? "Witaj z powrotem!" : "Dołącz do BandSpace"}
         </CardTitle>
         <CardDescription className="text-center text-base">
-          Zaloguj się, aby kontynuować pracę nad swoimi projektami
+          {isLoginView
+            ? "Zaloguj się, aby kontynuować pracę nad swoimi projektami"
+            : "Utwórz konto, aby rozpocząć współpracę muzyczną"}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6 transition-all duration-500 ease-in-out pt-1 px-8 pb-2">
@@ -132,7 +152,7 @@ export function LoginForm() {
           ) : (
             <div className="transition-all duration-500 ease-in-out">
               {/* Email/Password Form */}
-              <form onSubmit={handleEmailLogin} className="space-y-4">
+              <form onSubmit={handleEmailSubmit} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="email">E-mail</Label>
                   <div className="relative">
@@ -181,20 +201,79 @@ export function LoginForm() {
                   </div>
                 </div>
 
+                {/* Confirm Password field for registration */}
+                {!isLoginView && (
+                  <div className="space-y-2">
+                    <Label htmlFor="confirmPassword">Potwierdź hasło</Label>
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        id="confirmPassword"
+                        type={showConfirmPassword ? "text" : "password"}
+                        placeholder="Potwierdź swoje hasło"
+                        className="pl-10 pr-10 h-14 bg-surface border-border rounded-2xl transition-all duration-300"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        disabled={isLoading}
+                        required={!isLoginView}
+                      />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
+                        onClick={() =>
+                          setShowConfirmPassword(!showConfirmPassword)
+                        }
+                        disabled={isLoading}
+                      >
+                        {showConfirmPassword ? (
+                          <EyeOff className="h-4 w-4 text-muted-foreground" />
+                        ) : (
+                          <Eye className="h-4 w-4 text-muted-foreground" />
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
                 <Button
                   type="submit"
-                  className="w-full h-14 text-primary-foreground font-semibold text-base tracking-wide transition-all duration-300 mt-8"
-                  disabled={isLoading || !email.trim() || !password.trim()}
+                  className="w-full h-14 text-primary-foreground font-semibold text-base tracking-wide transition-all duration-300 mt-4"
+                  disabled={
+                    isLoading ||
+                    !email.trim() ||
+                    !password.trim() ||
+                    (!isLoginView && !confirmPassword.trim())
+                  }
                 >
-                  {isLoading ? "Logowanie..." : "Zaloguj się"}
+                  {isLoading
+                    ? isLoginView
+                      ? "Logowanie..."
+                      : "Tworzenie konta..."
+                    : isLoginView
+                    ? "Zaloguj się"
+                    : "Utwórz konto"}
                 </Button>
               </form>
 
               <div className="text-center space-y-2">
-                <Button variant="link">Zapomniałeś hasła?</Button>
+                {isLoginView && (
+                  <Button variant="link">Zapomniałeś hasła?</Button>
+                )}
                 <div className="text-sm text-muted-foreground">
-                  Nie masz konta?{" "}
-                  <Button variant="link">Zarejestruj się</Button>
+                  {isLoginView ? "Nie masz konta?" : "Masz już konto?"}{" "}
+                  <Button
+                    variant="link"
+                    onClick={() => {
+                      setIsLoginView(!isLoginView);
+                      setError(null);
+                      setPassword("");
+                      setConfirmPassword("");
+                    }}
+                  >
+                    {isLoginView ? "Zarejestruj się" : "Zaloguj się"}
+                  </Button>
                 </div>
                 <div className="pt-2">
                   <Button

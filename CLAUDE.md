@@ -77,3 +77,24 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Project-based collaboration model with invitations
 - File uploads should use FormData with the uploadRequest method
 - All forms should use React Hook Form with Zod validation
+
+## Related Projects
+
+### BandSpace Mobile App
+- **Location**: `/Users/sebastianlisiecki/Flutter Projects/bandspace_mobile`
+- **Framework**: Flutter/Dart
+- **Purpose**: Mobile companion app for BandSpace
+- When references are made to "aplikacja mobilna" or "mobile app", refer to code and design patterns from this Flutter project
+- Key reference files:
+  - `lib/core/theme/app_theme.dart` - Color palette and theme configuration
+  - `lib/features/auth/screens/auth_screen.dart` - Authentication UI patterns
+  - Mobile app uses the same backend API and follows similar design principles
+
+### BandSpace Backend API
+- **Location**: `/Users/sebastianlisiecki/bandspace-nestjs`
+- **Framework**: NestJS/TypeScript
+- **Purpose**: Backend API server for BandSpace ecosystem
+- When references are made to "backend", "API", or "server", refer to code and implementation patterns from this NestJS project
+- **API Base URL**: `https://bandspace-app-b8372bfadc38.herokuapp.com/api`
+- Both web and mobile apps consume this same backend API
+- Provides authentication, project management, file uploads, and collaboration features
