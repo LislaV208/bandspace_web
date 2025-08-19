@@ -1,6 +1,7 @@
 "use client";
 
 import { LoginForm } from "@/components/auth/login-form";
+import { LoadingSpinner } from "@/components/ui/loading-indicator";
 import { useAuth } from "@/contexts/auth-context";
 import { Music } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -19,7 +20,10 @@ export default function HomePage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <div className="text-center">
+          <LoadingSpinner size="lg" className="mx-auto mb-4" />
+          <p className="text-muted-foreground">Ładowanie...</p>
+        </div>
       </div>
     );
   }
@@ -27,7 +31,10 @@ export default function HomePage() {
   if (isAuthenticated) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <div className="text-center">
+          <LoadingSpinner size="lg" className="mx-auto mb-4" />
+          <p className="text-muted-foreground">Przekierowywanie...</p>
+        </div>
       </div>
     );
   }

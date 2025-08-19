@@ -1,6 +1,7 @@
 "use client";
 
 import { apiClient } from "@/lib/api";
+import { LoadingSpinner } from "@/components/ui/loading-indicator";
 import type { User } from "@/lib/types";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
@@ -37,14 +38,16 @@ export default function AuthSuccessPage() {
         localStorage.setItem("bandspace_session", JSON.stringify(session));
 
         // Wywołaj custom event żeby powiadomić AuthContext o nowej sesji
-        window.dispatchEvent(new CustomEvent('bandspace-session-updated', { 
-          detail: session 
-        }));
+        window.dispatchEvent(
+          new CustomEvent("bandspace-session-updated", {
+            detail: session,
+          })
+        );
 
         console.log("Google login successful:", userData.email);
 
         // Małe opóźnienie żeby AuthContext zdążył załadować dane
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise((resolve) => setTimeout(resolve, 100));
 
         // Przekieruj do dashboardu
         router.replace("/dashboard");
@@ -68,8 +71,8 @@ export default function AuthSuccessPage() {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center">
       <div className="text-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-        <p className="text-muted-foreground">Finalizowanie logowania...</p>
+        <LoadingSpinner size="lg" className="mx-auto mb-4" />
+        <p className="text-muted-foreground">Logowanie...</p>
       </div>
     </div>
   );

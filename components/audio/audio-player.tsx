@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Slider } from "@/components/ui/slider"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { LoadingSpinner } from "@/components/ui/loading-indicator"
 import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, Repeat, Shuffle, MoreHorizontal } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import type { Song } from "@/lib/types"
@@ -260,7 +261,7 @@ export function AudioPlayer({ songs, currentSongIndex, onSongChange, className }
               className="h-12 w-12 rounded-full border-border hover:bg-primary hover:text-primary-foreground bg-transparent"
             >
               {isLoading ? (
-                <div className="h-5 w-5 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                <LoadingSpinner size="sm" />
               ) : isPlaying ? (
                 <Pause className="h-6 w-6" />
               ) : (
