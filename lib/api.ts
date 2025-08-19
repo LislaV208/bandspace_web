@@ -53,7 +53,31 @@ class ApiClient {
       );
     }
 
-    return response.json() as Promise<T>;
+    // Check if response has content to parse
+    const contentType = response.headers.get("content-type");
+    const contentLength = response.headers.get("content-length");
+    
+    // If no content or content-length is 0, return empty object
+    if (contentLength === "0" || response.status === 204) {
+      return {} as T;
+    }
+    
+    // If content-type is not JSON, return empty object
+    if (!contentType || !contentType.includes("application/json")) {
+      return {} as T;
+    }
+
+    // Try to parse JSON, return empty object if it fails
+    try {
+      const text = await response.text();
+      if (!text || text.trim() === '') {
+        return {} as T;
+      }
+      return JSON.parse(text) as T;
+    } catch (error) {
+      console.warn("Failed to parse JSON response:", error);
+      return {} as T;
+    }
   }
 
   private async uploadRequest<T>(
