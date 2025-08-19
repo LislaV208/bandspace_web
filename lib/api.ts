@@ -1,3 +1,5 @@
+import { Project } from "./types";
+
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ||
   "https://bandspace-app-b8372bfadc38.herokuapp.com/api";
@@ -95,8 +97,10 @@ class ApiClient {
 
   // Google Web Flow - redirect to backend OAuth endpoint
   redirectToGoogleAuth() {
-    const isDev = process.env.NODE_ENV === 'development' || window.location.hostname === 'localhost';
-    const devParam = isDev ? '?dev=true' : '';
+    const isDev =
+      process.env.NODE_ENV === "development" ||
+      window.location.hostname === "localhost";
+    const devParam = isDev ? "?dev=true" : "";
     window.location.href = `${this.baseUrl}/auth/google${devParam}`;
   }
 
@@ -148,7 +152,7 @@ class ApiClient {
   }
 
   // Projects endpoints
-  async getProjects() {
+  async getProjects(): Promise<Project[]> {
     return this.request("/projects");
   }
 

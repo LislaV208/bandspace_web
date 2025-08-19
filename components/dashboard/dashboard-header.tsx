@@ -1,6 +1,6 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { UserAvatar } from "@/components/ui/user-avatar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -68,20 +68,7 @@ export function DashboardHeader() {
                   variant="ghost"
                   className="relative h-10 w-10 rounded-full"
                 >
-                  <Avatar className="h-10 w-10">
-                    <AvatarImage
-                      src={"/placeholder.svg"}
-                      alt={user?.name || "User"}
-                    />
-                    <AvatarFallback className="bg-secondary">
-                      {user?.name
-                        ?.split(" ")
-                        .map((n) => n[0])
-                        .join("") ||
-                        user?.email?.[0]?.toUpperCase() ||
-                        "U"}
-                    </AvatarFallback>
-                  </Avatar>
+                  <UserAvatar user={user} size="lg" showTooltip={false} />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56" align="end" forceMount>
