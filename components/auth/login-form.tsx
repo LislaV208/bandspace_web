@@ -89,14 +89,16 @@ export function LoginForm() {
   return (
     <Card className="border-border bg-card shadow-2xl shadow-black/20 rounded-3xl">
       <CardHeader className="space-y-2 pb-2 pt-8 px-8">
-        <CardTitle className="text-3xl text-center font-bold tracking-tight">
-          {isLoginView ? "Witaj z powrotem!" : "Dołącz do BandSpace"}
-        </CardTitle>
-        <CardDescription className="text-center text-base">
-          {isLoginView
-            ? "Zaloguj się, aby kontynuować pracę nad swoimi projektami"
-            : "Utwórz konto, aby rozpocząć współpracę muzyczną"}
-        </CardDescription>
+        <div className="transition-all duration-500 ease-in-out">
+          <CardTitle className="text-3xl text-center font-bold tracking-tight">
+            {isLoginView ? "Witaj z powrotem!" : "Dołącz do BandSpace"}
+          </CardTitle>
+          <CardDescription className="text-center text-base">
+            {isLoginView
+              ? "Zaloguj się, aby kontynuować pracę nad swoimi projektami"
+              : "Utwórz konto, aby rozpocząć współpracę muzyczną"}
+          </CardDescription>
+        </div>
       </CardHeader>
       <CardContent className="space-y-6 transition-all duration-500 ease-in-out pt-1 px-8 pb-2">
         {/* Error Message */}
@@ -201,41 +203,47 @@ export function LoginForm() {
                   </div>
                 </div>
 
-                {/* Confirm Password field for registration */}
-                {!isLoginView && (
-                  <div className="space-y-2">
-                    <Label htmlFor="confirmPassword">Potwierdź hasło</Label>
-                    <div className="relative">
-                      <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        id="confirmPassword"
-                        type={showConfirmPassword ? "text" : "password"}
-                        placeholder="Potwierdź swoje hasło"
-                        className="pl-10 pr-10 h-14 bg-surface border-border rounded-2xl transition-all duration-300"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        disabled={isLoading}
-                        required={!isLoginView}
-                      />
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
-                        onClick={() =>
-                          setShowConfirmPassword(!showConfirmPassword)
-                        }
-                        disabled={isLoading}
-                      >
-                        {showConfirmPassword ? (
-                          <EyeOff className="h-4 w-4 text-muted-foreground" />
-                        ) : (
-                          <Eye className="h-4 w-4 text-muted-foreground" />
-                        )}
-                      </Button>
+                {/* Confirm Password field for registration with animation */}
+                <div
+                  className={`transition-all duration-500 ease-in-out overflow-hidden ${
+                    !isLoginView ? "max-h-24 opacity-100" : "max-h-0 opacity-0"
+                  }`}
+                >
+                  {!isLoginView && (
+                    <div className="space-y-2">
+                      <Label htmlFor="confirmPassword">Potwierdź hasło</Label>
+                      <div className="relative">
+                        <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          id="confirmPassword"
+                          type={showConfirmPassword ? "text" : "password"}
+                          placeholder="Potwierdź swoje hasło"
+                          className="pl-10 pr-10 h-14 bg-surface border-border rounded-2xl transition-all duration-300"
+                          value={confirmPassword}
+                          onChange={(e) => setConfirmPassword(e.target.value)}
+                          disabled={isLoading}
+                          required={!isLoginView}
+                        />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
+                          onClick={() =>
+                            setShowConfirmPassword(!showConfirmPassword)
+                          }
+                          disabled={isLoading}
+                        >
+                          {showConfirmPassword ? (
+                            <EyeOff className="h-4 w-4 text-muted-foreground" />
+                          ) : (
+                            <Eye className="h-4 w-4 text-muted-foreground" />
+                          )}
+                        </Button>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
 
                 <Button
                   type="submit"
@@ -258,10 +266,21 @@ export function LoginForm() {
               </form>
 
               <div className="text-center space-y-2">
-                {isLoginView && (
-                  <Button variant="link">Zapomniałeś hasła?</Button>
-                )}
-                <div className="text-sm text-muted-foreground">
+                {/* Forgot password - only visible during login */}
+                <div
+                  className={`transition-all duration-500 ease-in-out ${
+                    isLoginView
+                      ? "max-h-10 opacity-100"
+                      : "max-h-0 opacity-0 overflow-hidden"
+                  }`}
+                >
+                  {isLoginView && (
+                    <Button variant="link">Zapomniałeś hasła?</Button>
+                  )}
+                </div>
+
+                {/* Toggle between login/register */}
+                <div className="text-sm text-muted-foreground transition-all duration-500 ease-in-out">
                   {isLoginView ? "Nie masz konta?" : "Masz już konto?"}{" "}
                   <Button
                     variant="link"
