@@ -69,18 +69,25 @@ export function LoginForm() {
   };
 
   return (
-    <Card className="border-border bg-card">
-      <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl text-center">Zaloguj się</CardTitle>
-        <CardDescription className="text-center text-muted-foreground">
-          Rozpocznij swoją muzyczną podróż
+    <Card className="border-border bg-card shadow-2xl shadow-black/20 rounded-3xl">
+      <CardHeader className="space-y-2 pb-2 pt-8 px-8">
+        <CardTitle className="text-3xl text-center font-bold tracking-tight">
+          Witaj z powrotem!
+        </CardTitle>
+        <CardDescription className="text-center text-base">
+          Zaloguj się, aby kontynuować pracę nad swoimi projektami
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4 transition-all duration-500 ease-in-out">
+      <CardContent className="space-y-6 transition-all duration-500 ease-in-out pt-1 px-8 pb-2">
         {/* Error Message */}
         {error && (
-          <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-lg text-center">
-            {error}
+          <div className="text-sm text-destructive bg-destructive/10 p-4 rounded-2xl text-center border border-destructive/30 shadow-lg">
+            <div className="flex items-center justify-center gap-2">
+              <div className="w-4 h-4 rounded-full bg-destructive/20 flex items-center justify-center">
+                <div className="w-2 h-2 rounded-full bg-destructive"></div>
+              </div>
+              {error}
+            </div>
           </div>
         )}
 
@@ -97,16 +104,16 @@ export function LoginForm() {
               className={`transition-all duration-500 ease-in-out ${
                 isTransitioningToGoogle
                   ? "opacity-0 max-h-0 mb-0"
-                  : "opacity-100 max-h-20 mb-4"
+                  : "opacity-100 max-h-20 mb-6"
               }`}
             >
               <Button
-                className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground"
+                className="w-full h-16 text-primary-foreground font-semibold text-base tracking-wide transition-all duration-300"
                 onClick={handleGoogleLogin}
                 disabled={isLoading}
               >
-                <GoogleIcon className="mr-2 h-5 w-5" />
-                Kontynuuj z Google
+                <GoogleIcon className="mr-3 h-6 w-6" />
+                Kontynuuj z kontem Google
               </Button>
             </div>
           )}
@@ -115,10 +122,11 @@ export function LoginForm() {
             <div className="text-center transition-all duration-500 ease-in-out">
               <Button
                 variant="ghost"
-                className="text-muted-foreground hover:text-foreground"
+                className="text-muted-foreground p-4 rounded-xl hover:bg-muted/50"
                 onClick={() => setShowEmailLogin(true)}
               >
-                Lub zaloguj się e-mailem
+                <Mail className="mr-2 h-4 w-4" />
+                Użyj adresu email i hasła
               </Button>
             </div>
           ) : (
@@ -128,12 +136,12 @@ export function LoginForm() {
                 <div className="space-y-2">
                   <Label htmlFor="email">E-mail</Label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                       id="email"
                       type="email"
                       placeholder="Wprowadź swój e-mail"
-                      className="pl-10 h-12 bg-input border-border"
+                      className="pl-10 h-14 bg-surface border-border rounded-2xl transition-all duration-300"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       disabled={isLoading}
@@ -145,12 +153,12 @@ export function LoginForm() {
                 <div className="space-y-2">
                   <Label htmlFor="password">Hasło</Label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                       id="password"
                       type={showPassword ? "text" : "password"}
                       placeholder="Wprowadź swoje hasło"
-                      className="pl-10 pr-10 h-12 bg-input border-border"
+                      className="pl-10 pr-10 h-14 bg-surface border-border rounded-2xl  transition-all duration-300"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       disabled={isLoading}
@@ -175,7 +183,7 @@ export function LoginForm() {
 
                 <Button
                   type="submit"
-                  className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground"
+                  className="w-full h-14 text-primary-foreground font-semibold text-base tracking-wide transition-all duration-300 mt-8"
                   disabled={isLoading || !email.trim() || !password.trim()}
                 >
                   {isLoading ? "Logowanie..." : "Zaloguj się"}
@@ -183,25 +191,14 @@ export function LoginForm() {
               </form>
 
               <div className="text-center space-y-2">
-                <Button
-                  variant="link"
-                  className="text-accent hover:text-accent/80 p-0"
-                >
-                  Zapomniałeś hasła?
-                </Button>
+                <Button variant="link">Zapomniałeś hasła?</Button>
                 <div className="text-sm text-muted-foreground">
                   Nie masz konta?{" "}
-                  <Button
-                    variant="link"
-                    className="text-accent hover:text-accent/80 p-0"
-                  >
-                    Zarejestruj się
-                  </Button>
+                  <Button variant="link">Zarejestruj się</Button>
                 </div>
                 <div className="pt-2">
                   <Button
                     variant="ghost"
-                    size="sm"
                     className="text-muted-foreground hover:text-foreground"
                     onClick={() => {
                       setShowEmailLogin(false);
@@ -211,7 +208,8 @@ export function LoginForm() {
                       }, 1);
                     }}
                   >
-                    Powrót do Google
+                    <GoogleIcon className="mr-2 h-4 w-4" />
+                    Użyj konta Google
                   </Button>
                 </div>
               </div>

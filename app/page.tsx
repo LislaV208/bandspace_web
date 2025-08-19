@@ -37,8 +37,8 @@ export default function HomePage() {
       <div className="w-full max-w-md space-y-8">
         {/* Logo and Header */}
         <div className="flex items-center justify-center gap-4">
-          <div className="bg-primary rounded-2xl p-3">
-            <Music className="h-8 w-8 text-primary-foreground" />
+          <div className="w-12 h-12 rounded-2xl flex items-center justify-center">
+            <Music className="h-6 w-6 text-white" />
           </div>
           <h1 className="text-4xl font-bold text-foreground">BandSpace</h1>
         </div>

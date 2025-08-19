@@ -41,34 +41,34 @@
 }
 
 .dark {
-  /* Updated to use proper OKLCH values with chroma and hue for BandSpace colors */
-  --background: oklch(0.145 0.015 264); /* Gray-900 with slight blue tint */
-  --foreground: oklch(0.985 0.005 264); /* White with slight blue tint */
-  --card: oklch(0.205 0.02 264); /* Gray-800 with blue tint */
-  --card-foreground: oklch(0.985 0.005 264);
-  --popover: oklch(0.205 0.02 264);
-  --popover-foreground: oklch(0.985 0.005 264);
-  --primary: oklch(0.35 0.15 264); /* BandSpace Blue #273486 */
-  --primary-foreground: oklch(0.985 0.005 264);
-  --secondary: oklch(0.269 0.025 264); /* Gray-700 with blue tint */
-  --secondary-foreground: oklch(0.825 0.01 264); /* Gray-300 */
-  --muted: oklch(0.269 0.025 264);
-  --muted-foreground: oklch(0.556 0.015 264); /* Gray-500 */
-  --accent: oklch(0.55 0.18 264); /* Blue-600 accent */
-  --accent-foreground: oklch(0.985 0.005 264);
-  --destructive: oklch(0.65 0.25 25); /* Red error color */
-  --destructive-foreground: oklch(0.985 0.005 264);
-  --border: oklch(0.269 0.025 264); /* Gray-700 border */
-  --input: oklch(0.205 0.02 264);
-  --ring: oklch(0.65 0.15 264); /* Blue-400 ring */
-  --success: oklch(0.65 0.18 160); /* Emerald-500 */
-  --primary-light: oklch(0.45 0.18 264); /* Primary Light #3A4DB0 */
-  --primary-dark: oklch(0.25 0.12 264); /* Primary Dark #1A2360 */
-  --accent-light: oklch(0.65 0.15 264); /* Blue-400 */
-  --text-secondary: oklch(0.825 0.01 264); /* Gray-300 */
-  --text-hint: oklch(0.556 0.015 264); /* Gray-500 */
-  --surface: oklch(0.205 0.02 264); /* Gray-800 */
-  --surface-medium: oklch(0.269 0.025 264); /* Gray-700 */
+  /* BandSpace Mobile App Colors - matching Flutter theme exactly */
+  --background: #111827; /* Gray-900 - darker like mobile */
+  --foreground: #ffffff; /* White */
+  --card: #1f2937; /* Gray-800 surface color from mobile */
+  --card-foreground: #ffffff;
+  --popover: #1f2937;
+  --popover-foreground: #ffffff;
+  --primary: #2563eb; /* Blue-600 accent - teraz primary */
+  --primary-foreground: #ffffff;
+  --secondary: #374151; /* Gray-700 */
+  --secondary-foreground: #d1d5db; /* Gray-300 */
+  --muted: #374151;
+  --muted-foreground: #6b7280; /* Gray-500 */
+  --accent: #273486; /* BandSpace Blue - teraz accent */
+  --accent-foreground: #ffffff;
+  --destructive: #ef4444; /* Red error color */
+  --destructive-foreground: #ffffff;
+  --border: #374151; /* Gray-700 border from mobile */
+  --input: #1f2937; /* Same as surface */
+  --ring: #60a5fa; /* Blue-400 ring */
+  --success: #10b981; /* Emerald-500 */
+  --primary-light: #60a5fa; /* Blue-400 - teraz primary-light */
+  --primary-dark: #1e40af; /* Blue-800 - teraz primary-dark */
+  --accent-light: #3a4db0; /* BandSpace Light - teraz accent-light */
+  --text-secondary: #d1d5db; /* Gray-300 from mobile */
+  --text-hint: #6b7280; /* Gray-500 from mobile */
+  --surface: #1f2937; /* Gray-800 from mobile */
+  --surface-medium: #374151; /* Gray-700 from mobile */
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
@@ -86,7 +86,8 @@
 
 @theme inline {
   --font-sans: var(--font-inter);
-  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -141,29 +142,29 @@
   body {
     @apply bg-background text-foreground;
   }
-  /* Updated BandSpace utility classes with proper color values */
+  /* BandSpace utility classes with hex colors */
   .bg-bandspace-blue {
-    background-color: oklch(0.35 0.15 264);
+    background-color: #273486;
   }
   .bg-primary-light {
-    background-color: oklch(0.45 0.18 264);
+    background-color: #3a4db0;
   }
   .bg-primary-dark {
-    background-color: oklch(0.25 0.12 264);
+    background-color: #1a2360;
   }
   .bg-surface {
-    background-color: oklch(0.205 0.02 264);
+    background-color: #1f2937;
   }
   .bg-surface-medium {
-    background-color: oklch(0.269 0.025 264);
+    background-color: #374151;
   }
   .text-secondary {
-    color: oklch(0.825 0.01 264);
+    color: #d1d5db;
   }
   .text-hint {
-    color: oklch(0.556 0.015 264);
+    color: #6b7280;
   }
   .border-surface-medium {
-    border-color: oklch(0.269 0.025 264);
+    border-color: #374151;
   }
 }
