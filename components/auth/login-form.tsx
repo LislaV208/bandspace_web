@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/contexts/auth-context";
 import { ApiError, apiClient } from "@/lib/api";
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
@@ -24,6 +23,8 @@ export function LoginForm() {
   const { login, isLoading, isAuthenticated } = useAuth();
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [showEmailLogin, setShowEmailLogin] = useState(false);
+  const [isTransitioningToGoogle, setIsTransitioningToGoogle] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -72,10 +73,10 @@ export function LoginForm() {
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl text-center">Zaloguj się</CardTitle>
         <CardDescription className="text-center text-muted-foreground">
-          Wybierz preferowany sposób logowania
+          Rozpocznij swoją muzyczną podróż
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-4 transition-all duration-500 ease-in-out">
         {/* Error Message */}
         {error && (
           <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-lg text-center">
@@ -83,103 +84,139 @@ export function LoginForm() {
           </div>
         )}
 
-        {/* Google Login Button */}
-        <Button
-          variant="outline"
-          className="w-full h-12 border-border hover:bg-secondary bg-transparent"
-          onClick={handleGoogleLogin}
-          disabled={isLoading}
+        <div
+          className={`transition-all duration-500 ease-in-out overflow-hidden ${
+            showEmailLogin
+              ? "max-h-[800px] opacity-100"
+              : "max-h-[200px] opacity-100"
+          }`}
         >
-          <GoogleIcon className="mr-2 h-5 w-5" />
-          Kontynuuj z Google
-        </Button>
-
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <Separator className="w-full" />
-          </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-card px-2 text-muted-foreground">
-              Lub kontynuuj z
-            </span>
-          </div>
-        </div>
-
-        {/* Email/Password Form */}
-        <form onSubmit={handleEmailLogin} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="email">E-mail</Label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input
-                id="email"
-                type="email"
-                placeholder="Wprowadź swój e-mail"
-                className="pl-10 h-12 bg-input border-border"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                disabled={isLoading}
-                required
-              />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="password">Hasło</Label>
-            <div className="relative">
-              <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input
-                id="password"
-                type={showPassword ? "text" : "password"}
-                placeholder="Wprowadź swoje hasło"
-                className="pl-10 pr-10 h-12 bg-input border-border"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                disabled={isLoading}
-                required
-              />
+          {/* Google Login Button */}
+          {(!showEmailLogin || isTransitioningToGoogle) && (
+            <div
+              className={`transition-all duration-500 ease-in-out ${
+                isTransitioningToGoogle
+                  ? "opacity-0 max-h-0 mb-0"
+                  : "opacity-100 max-h-20 mb-4"
+              }`}
+            >
               <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
-                onClick={() => setShowPassword(!showPassword)}
+                className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground"
+                onClick={handleGoogleLogin}
                 disabled={isLoading}
               >
-                {showPassword ? (
-                  <EyeOff className="h-4 w-4 text-muted-foreground" />
-                ) : (
-                  <Eye className="h-4 w-4 text-muted-foreground" />
-                )}
+                <GoogleIcon className="mr-2 h-5 w-5" />
+                Kontynuuj z Google
               </Button>
             </div>
-          </div>
+          )}
 
-          <Button
-            type="submit"
-            className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground"
-            disabled={isLoading || !email.trim() || !password.trim()}
-          >
-            {isLoading ? "Logowanie..." : "Zaloguj się"}
-          </Button>
-        </form>
+          {!showEmailLogin ? (
+            <div className="text-center transition-all duration-500 ease-in-out">
+              <Button
+                variant="ghost"
+                className="text-muted-foreground hover:text-foreground"
+                onClick={() => setShowEmailLogin(true)}
+              >
+                Lub zaloguj się e-mailem
+              </Button>
+            </div>
+          ) : (
+            <div className="transition-all duration-500 ease-in-out">
+              {/* Email/Password Form */}
+              <form onSubmit={handleEmailLogin} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="email">E-mail</Label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="Wprowadź swój e-mail"
+                      className="pl-10 h-12 bg-input border-border"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      disabled={isLoading}
+                      required
+                    />
+                  </div>
+                </div>
 
-        <div className="text-center space-y-2">
-          <Button
-            variant="link"
-            className="text-accent hover:text-accent/80 p-0"
-          >
-            Zapomniałeś hasła?
-          </Button>
-          <div className="text-sm text-muted-foreground">
-            Nie masz konta?{" "}
-            <Button
-              variant="link"
-              className="text-accent hover:text-accent/80 p-0"
-            >
-              Zarejestruj się
-            </Button>
-          </div>
+                <div className="space-y-2">
+                  <Label htmlFor="password">Hasło</Label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="password"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Wprowadź swoje hasło"
+                      className="pl-10 pr-10 h-12 bg-input border-border"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      disabled={isLoading}
+                      required
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
+                      onClick={() => setShowPassword(!showPassword)}
+                      disabled={isLoading}
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-4 w-4 text-muted-foreground" />
+                      ) : (
+                        <Eye className="h-4 w-4 text-muted-foreground" />
+                      )}
+                    </Button>
+                  </div>
+                </div>
+
+                <Button
+                  type="submit"
+                  className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground"
+                  disabled={isLoading || !email.trim() || !password.trim()}
+                >
+                  {isLoading ? "Logowanie..." : "Zaloguj się"}
+                </Button>
+              </form>
+
+              <div className="text-center space-y-2">
+                <Button
+                  variant="link"
+                  className="text-accent hover:text-accent/80 p-0"
+                >
+                  Zapomniałeś hasła?
+                </Button>
+                <div className="text-sm text-muted-foreground">
+                  Nie masz konta?{" "}
+                  <Button
+                    variant="link"
+                    className="text-accent hover:text-accent/80 p-0"
+                  >
+                    Zarejestruj się
+                  </Button>
+                </div>
+                <div className="pt-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-muted-foreground hover:text-foreground"
+                    onClick={() => {
+                      setShowEmailLogin(false);
+                      setIsTransitioningToGoogle(true);
+                      setTimeout(() => {
+                        setIsTransitioningToGoogle(false);
+                      }, 1);
+                    }}
+                  >
+                    Powrót do Google
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>
