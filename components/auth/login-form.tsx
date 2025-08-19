@@ -10,6 +10,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/auth-context";
@@ -31,6 +39,11 @@ export function LoginForm() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [showResetModal, setShowResetModal] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [resetSuccess, setResetSuccess] = useState(false);
+  const [resetLoading, setResetLoading] = useState(false);
+  const [resetError, setResetError] = useState<string | null>(null);
 
   // Redirect if already authenticated
   if (isAuthenticated) {
@@ -84,6 +97,35 @@ export function LoginForm() {
         );
       }
     }
+  };
+
+  const handlePasswordReset = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!resetEmail.trim()) return;
+
+    try {
+      setResetError(null);
+      setResetLoading(true);
+      await apiClient.requestPasswordReset(resetEmail);
+      setResetSuccess(true);
+    } catch (error) {
+      console.error("Password reset failed:", error);
+      if (error instanceof ApiError) {
+        setResetError(error.message);
+      } else {
+        setResetError("Nie udało się wysłać emaila resetującego. Spróbuj ponownie.");
+      }
+    } finally {
+      setResetLoading(false);
+    }
+  };
+
+  const handleResetModalClose = () => {
+    setShowResetModal(false);
+    setResetEmail("");
+    setResetSuccess(false);
+    setResetError(null);
+    setResetLoading(false);
   };
 
   return (
@@ -275,7 +317,15 @@ export function LoginForm() {
                   }`}
                 >
                   {isLoginView && (
-                    <Button variant="link">Zapomniałeś hasła?</Button>
+                    <Button 
+                      variant="link"
+                      onClick={() => {
+                        setShowResetModal(true);
+                        setResetEmail(email); // Pre-fill with current email if available
+                      }}
+                    >
+                      Zapomniałeś hasła?
+                    </Button>
                   )}
                 </div>
 
@@ -315,6 +365,84 @@ export function LoginForm() {
           )}
         </div>
       </CardContent>
+
+      {/* Password Reset Modal */}
+      <Dialog open={showResetModal} onOpenChange={handleResetModalClose}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold text-center">
+              Resetowanie hasła
+            </DialogTitle>
+            <DialogDescription className="text-center text-muted-foreground">
+              Podaj adres e-mail, a wyślemy Ci link do resetowania hasła
+            </DialogDescription>
+          </DialogHeader>
+
+          {resetSuccess ? (
+            <div className="text-center space-y-4 py-6">
+              <div className="w-16 h-16 mx-auto bg-green-100 rounded-full flex items-center justify-center">
+                <Mail className="h-8 w-8 text-green-600" />
+              </div>
+              <div className="space-y-2">
+                <h3 className="font-semibold text-lg">Email wysłany!</h3>
+                <p className="text-muted-foreground text-sm">
+                  Sprawdź swoją skrzynkę pocztową i kliknij w link resetujący hasło.
+                </p>
+              </div>
+              <Button 
+                onClick={handleResetModalClose}
+                className="w-full"
+              >
+                Zamknij
+              </Button>
+            </div>
+          ) : (
+            <form onSubmit={handlePasswordReset} className="space-y-4">
+              {resetError && (
+                <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-lg text-center border border-destructive/30">
+                  {resetError}
+                </div>
+              )}
+
+              <div className="space-y-2">
+                <Label htmlFor="resetEmail">Adres e-mail</Label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="resetEmail"
+                    type="email"
+                    placeholder="Wprowadź swój e-mail"
+                    className="pl-10 h-12"
+                    value={resetEmail}
+                    onChange={(e) => setResetEmail(e.target.value)}
+                    disabled={resetLoading}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="flex gap-3">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleResetModalClose}
+                  disabled={resetLoading}
+                  className="flex-1"
+                >
+                  Anuluj
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={resetLoading || !resetEmail.trim()}
+                  className="flex-1"
+                >
+                  {resetLoading ? "Wysyłanie..." : "Wyślij"}
+                </Button>
+              </div>
+            </form>
+          )}
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 }
