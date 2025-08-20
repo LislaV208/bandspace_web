@@ -1,4 +1,10 @@
-import { Project, Session, User, UpdateUserProfileRequest } from "./types";
+import {
+  Project,
+  Session,
+  Song,
+  UpdateUserProfileRequest,
+  User,
+} from "./types";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ||
@@ -19,8 +25,8 @@ class ApiClient {
 
   private isPublicEndpoint(endpoint: string): boolean {
     // Auth endpoints are public except logout
-    if (endpoint.includes('/auth/')) {
-      return !endpoint.includes('/auth/logout');
+    if (endpoint.includes("/auth/")) {
+      return !endpoint.includes("/auth/logout");
     }
     return false;
   }
@@ -54,7 +60,11 @@ class ApiClient {
     });
 
     // Handle 401 Unauthorized - token expired
-    if (response.status === 401 && !this.isPublicEndpoint(endpoint) && retryCount === 0) {
+    if (
+      response.status === 401 &&
+      !this.isPublicEndpoint(endpoint) &&
+      retryCount === 0
+    ) {
       try {
         await this.handleTokenRefresh();
         // Retry the request with new token
@@ -111,7 +121,7 @@ class ApiClient {
 
     // Start a new refresh process
     this.refreshTokenPromise = this.tryRefreshTokenWithRetry();
-    
+
     try {
       await this.refreshTokenPromise;
     } finally {
@@ -136,7 +146,7 @@ class ApiClient {
         }
 
         // Wait before next attempt (exponential backoff)
-        await new Promise(resolve => 
+        await new Promise((resolve) =>
           setTimeout(resolve, retryDelay * attempt)
         );
       }
@@ -169,17 +179,17 @@ class ApiClient {
     }
 
     const newSession: Session = await response.json();
-    
+
     // Update stored session
     localStorage.setItem("bandspace_session", JSON.stringify(newSession));
-    
+
     // Update access token in memory
     this.setAccessToken(newSession.accessToken);
 
     // Dispatch event to notify auth context
     window.dispatchEvent(
-      new CustomEvent("bandspace-session-updated", { 
-        detail: newSession 
+      new CustomEvent("bandspace-session-updated", {
+        detail: newSession,
       })
     );
   }
@@ -280,7 +290,10 @@ class ApiClient {
     });
   }
 
-  async changePassword(currentPassword: string, newPassword: string): Promise<void> {
+  async changePassword(
+    currentPassword: string,
+    newPassword: string
+  ): Promise<void> {
     return this.request("/auth/change-password", {
       method: "PATCH",
       body: JSON.stringify({ currentPassword, newPassword }),
@@ -342,7 +355,7 @@ class ApiClient {
   }
 
   // Songs endpoints
-  async getProjectSongs(projectId: number) {
+  async getProjectSongs(projectId: number): Promise<Song[]> {
     return this.request(`/projects/${projectId}/songs`);
   }
 
