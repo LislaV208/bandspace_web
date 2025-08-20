@@ -172,6 +172,12 @@ export function SongsTab({ projectId }: SongsTabProps) {
   return (
     <>
       <div className="space-y-6">
+        {error && (
+          <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-lg">
+            Ostrzeżenie: {error}. Wyświetlanie zapisanych danych.
+          </div>
+        )}
+
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
@@ -185,6 +191,14 @@ export function SongsTab({ projectId }: SongsTabProps) {
               />
             </div>
           </div>
+
+          <Button
+            onClick={() => setShowUploadDialog(true)}
+            className="bg-primary hover:bg-primary/90 text-primary-foreground"
+          >
+            <Upload className="h-4 w-4 mr-2" />
+            Nowy utwór
+          </Button>
         </div>
 
         {/* Audio Player */}
