@@ -46,3 +46,7 @@ export interface ProjectInvitation {
   invitedBy: User
   createdAt: string
 }
+
+export interface UpdateUserProfileRequest {
+  name?: string
+}

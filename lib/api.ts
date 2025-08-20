@@ -1,4 +1,4 @@
-import { Project, Session } from "./types";
+import { Project, Session, User, UpdateUserProfileRequest } from "./types";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ||
@@ -260,7 +260,7 @@ class ApiClient {
     });
   }
 
-  async logout() {
+  async logout(): Promise<void> {
     return this.request("/auth/logout", {
       method: "POST",
     });
@@ -280,7 +280,7 @@ class ApiClient {
     });
   }
 
-  async changePassword(currentPassword: string, newPassword: string) {
+  async changePassword(currentPassword: string, newPassword: string): Promise<void> {
     return this.request("/auth/change-password", {
       method: "PATCH",
       body: JSON.stringify({ currentPassword, newPassword }),
@@ -297,6 +297,19 @@ class ApiClient {
   // User endpoints
   async getUserMe() {
     return this.request("/users/me");
+  }
+
+  async updateUserProfile(updates: UpdateUserProfileRequest): Promise<User> {
+    return this.request("/users/me", {
+      method: "PATCH",
+      body: JSON.stringify(updates),
+    });
+  }
+
+  async deleteAccount(): Promise<void> {
+    return this.request("/users/me", {
+      method: "DELETE",
+    });
   }
 
   // Projects endpoints
