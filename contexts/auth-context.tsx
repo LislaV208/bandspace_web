@@ -67,7 +67,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     initSession()
   }, [clearSession])
 
-  // Listen for custom session update events (from auth success page)
+  // Listen for custom session update events (from auth success page and API client)
   useEffect(() => {
     const handleSessionUpdate = (e: CustomEvent) => {
       try {
@@ -91,6 +91,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
         } catch (error) {
           console.error("Failed to parse session from storage event:", error)
         }
+      } else if (e.key === "bandspace_session" && !e.newValue) {
+        // Session was removed
+        clearSession()
       }
     }
 
@@ -101,26 +104,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       window.removeEventListener("bandspace-session-updated", handleSessionUpdate as EventListener)
       window.removeEventListener("storage", handleStorageChange)
     }
-  }, [])
-
-  // Auto-refresh token every 50 minutes
-  useEffect(() => {
-    if (!isAuthenticated) return
-
-    const interval = setInterval(
-      async () => {
-        try {
-          await refreshToken()
-        } catch (error) {
-          console.error("Auto token refresh failed:", error)
-          await logout()
-        }
-      },
-      50 * 60 * 1000,
-    ) // 50 minutes
-
-    return () => clearInterval(interval)
-  }, [isAuthenticated])
+  }, [clearSession])
 
   const saveSession = (session: Session) => {
     localStorage.setItem("bandspace_session", JSON.stringify(session))
@@ -128,10 +112,30 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setUser(session.user)
   }
 
+  const refreshToken = useCallback(async () => {
+    try {
+      const storedSession = localStorage.getItem("bandspace_session")
+      if (!storedSession) throw new Error("No session found")
+
+      const session: Session = JSON.parse(storedSession)
+      if (!session.refreshToken) throw new Error("No refresh token available")
+
+      const newSession = await apiClient.refreshToken(session.refreshToken)
+      saveSession(newSession)
+      
+      console.log("Token refreshed successfully")
+    } catch (error) {
+      console.error("Token refresh failed:", error)
+      // Clear invalid session and redirect to login
+      clearSession()
+      throw error
+    }
+  }, [clearSession])
+
   const login = useCallback(async (email: string, password: string) => {
     try {
       setIsLoading(true)
-      const session = await apiClient.login(email, password)
+      const session = await apiClient.login(email, password) as Session
       saveSession(session)
     } catch (error) {
       console.error("Login failed:", error)
@@ -141,11 +145,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }, [])
 
-
   const register = useCallback(async (email: string, password: string) => {
     try {
       setIsLoading(true)
-      const session = await apiClient.register(email, password)
+      const session = await apiClient.register(email, password) as Session
       saveSession(session)
     } catch (error) {
       console.error("Registration failed:", error)
@@ -167,20 +170,25 @@ export function AuthProvider({ children }: AuthProviderProps) {
     clearSession()
   }, [clearSession])
 
-  const refreshToken = useCallback(async () => {
-    try {
-      const storedSession = localStorage.getItem("bandspace_session")
-      if (!storedSession) throw new Error("No session found")
+  // Auto-refresh token every 50 minutes
+  useEffect(() => {
+    if (!isAuthenticated) return
 
-      // TODO: Implement refresh token endpoint
-      // const session: Session = JSON.parse(storedSession)
-      // const newSession = await apiClient.refreshToken(session.refreshToken)
-      // saveSession(newSession)
-    } catch (error) {
-      console.error("Token refresh failed:", error)
-      throw error
-    }
-  }, [])
+    const interval = setInterval(
+      async () => {
+        try {
+          await refreshToken()
+        } catch (error) {
+          console.error("Auto token refresh failed:", error)
+          // Don't logout immediately, let the API client handle 401s
+          // The API client will trigger session updates or user will be logged out on next request
+        }
+      },
+      50 * 60 * 1000,
+    ) // 50 minutes
+
+    return () => clearInterval(interval)
+  }, [isAuthenticated, refreshToken])
 
   const value: AuthContextType = {
     user,

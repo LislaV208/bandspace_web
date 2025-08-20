@@ -1,4 +1,4 @@
-import { Project } from "./types";
+import { Project, Session } from "./types";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ||
@@ -7,6 +7,7 @@ const API_BASE_URL =
 class ApiClient {
   private baseUrl: string;
   private accessToken: string | null = null;
+  private refreshTokenPromise: Promise<void> | null = null;
 
   constructor(baseUrl: string) {
     this.baseUrl = baseUrl;
@@ -16,9 +17,18 @@ class ApiClient {
     this.accessToken = token;
   }
 
+  private isPublicEndpoint(endpoint: string): boolean {
+    // Auth endpoints are public except logout
+    if (endpoint.includes('/auth/')) {
+      return !endpoint.includes('/auth/logout');
+    }
+    return false;
+  }
+
   private async request<T>(
     endpoint: string,
-    options: RequestInit = {}
+    options: RequestInit = {},
+    retryCount = 0
   ): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
     const headers: Record<string, string> = {
@@ -33,7 +43,8 @@ class ApiClient {
       });
     }
 
-    if (this.accessToken) {
+    // Add authorization header for non-public endpoints
+    if (!this.isPublicEndpoint(endpoint) && this.accessToken) {
       headers.Authorization = `Bearer ${this.accessToken}`;
     }
 
@@ -41,6 +52,18 @@ class ApiClient {
       ...options,
       headers,
     });
+
+    // Handle 401 Unauthorized - token expired
+    if (response.status === 401 && !this.isPublicEndpoint(endpoint) && retryCount === 0) {
+      try {
+        await this.handleTokenRefresh();
+        // Retry the request with new token
+        return this.request<T>(endpoint, options, retryCount + 1);
+      } catch (refreshError) {
+        // Token refresh failed - let the auth context handle this
+        throw new ApiError(401, "Authentication failed", refreshError);
+      }
+    }
 
     if (!response.ok) {
       const errorData: { message?: string } = await (
@@ -80,9 +103,91 @@ class ApiClient {
     }
   }
 
+  private async handleTokenRefresh(): Promise<void> {
+    // If there's already a refresh in progress, wait for it
+    if (this.refreshTokenPromise) {
+      return this.refreshTokenPromise;
+    }
+
+    // Start a new refresh process
+    this.refreshTokenPromise = this.tryRefreshTokenWithRetry();
+    
+    try {
+      await this.refreshTokenPromise;
+    } finally {
+      this.refreshTokenPromise = null;
+    }
+  }
+
+  private async tryRefreshTokenWithRetry(): Promise<void> {
+    const maxRetries = 5;
+    const retryDelay = 100; // milliseconds
+
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        await this.tryRefreshToken();
+        return; // Success - exit retry loop
+      } catch (error) {
+        if (attempt === maxRetries) {
+          // Last attempt - throw error
+          throw new Error(
+            `Token refresh failed after ${maxRetries} attempts: ${error}`
+          );
+        }
+
+        // Wait before next attempt (exponential backoff)
+        await new Promise(resolve => 
+          setTimeout(resolve, retryDelay * attempt)
+        );
+      }
+    }
+  }
+
+  private async tryRefreshToken(): Promise<void> {
+    const storedSession = localStorage.getItem("bandspace_session");
+    if (!storedSession) {
+      throw new Error("No session found");
+    }
+
+    const session: Session = JSON.parse(storedSession);
+    if (!session.refreshToken) {
+      throw new Error("No refresh token available");
+    }
+
+    // Use direct fetch to avoid interceptors during refresh
+    const response = await fetch(`${this.baseUrl}/auth/refresh`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ refreshToken: session.refreshToken }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || "Token refresh failed");
+    }
+
+    const newSession: Session = await response.json();
+    
+    // Update stored session
+    localStorage.setItem("bandspace_session", JSON.stringify(newSession));
+    
+    // Update access token in memory
+    this.setAccessToken(newSession.accessToken);
+
+    // Dispatch event to notify auth context
+    window.dispatchEvent(
+      new CustomEvent("bandspace-session-updated", { 
+        detail: newSession 
+      })
+    );
+  }
+
   private async uploadRequest<T>(
     endpoint: string,
-    formData: FormData
+    formData: FormData,
+    retryCount = 0
   ): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
     const headers: Record<string, string> = {};
@@ -96,6 +201,18 @@ class ApiClient {
       headers,
       body: formData,
     });
+
+    // Handle 401 Unauthorized - token expired
+    if (response.status === 401 && retryCount === 0) {
+      try {
+        await this.handleTokenRefresh();
+        // Retry the request with new token
+        return this.uploadRequest<T>(endpoint, formData, retryCount + 1);
+      } catch (refreshError) {
+        // Token refresh failed - let the auth context handle this
+        throw new ApiError(401, "Authentication failed", refreshError);
+      }
+    }
 
     if (!response.ok) {
       const errorData: { message?: string } = await (
@@ -167,6 +284,13 @@ class ApiClient {
     return this.request("/auth/change-password", {
       method: "PATCH",
       body: JSON.stringify({ currentPassword, newPassword }),
+    });
+  }
+
+  async refreshToken(refreshToken: string): Promise<Session> {
+    return this.request("/auth/refresh", {
+      method: "POST",
+      body: JSON.stringify({ refreshToken }),
     });
   }
 
