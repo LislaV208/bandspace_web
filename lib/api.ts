@@ -229,8 +229,8 @@ class ApiClient {
   }
 
   // Auth endpoints
-  async login(email: string, password: string) {
-    return this.request("/auth/login", {
+  async login(email: string, password: string): Promise<Session> {
+    return this.request<Session>("/auth/login", {
       method: "POST",
       body: JSON.stringify({ email, password }),
     });
@@ -253,8 +253,8 @@ class ApiClient {
     });
   }
 
-  async register(email: string, password: string) {
-    return this.request("/auth/register", {
+  async register(email: string, password: string): Promise<Session> {
+    return this.request<Session>("/auth/register", {
       method: "POST",
       body: JSON.stringify({ email, password }),
     });

@@ -77,6 +77,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Project-based collaboration model with invitations
 - File uploads should use FormData with the uploadRequest method
 - All forms should use React Hook Form with Zod validation
+- **Strong TypeScript Usage**: Always add proper return types to method signatures instead of using type casting (`as`). For example, prefer `async login(): Promise<Session>` over `const session = await login() as Session`
 
 ## Related Projects
 

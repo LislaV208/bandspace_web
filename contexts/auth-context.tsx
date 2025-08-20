@@ -135,7 +135,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const login = useCallback(async (email: string, password: string) => {
     try {
       setIsLoading(true)
-      const session = await apiClient.login(email, password) as Session
+      const session = await apiClient.login(email, password)
       saveSession(session)
     } catch (error) {
       console.error("Login failed:", error)
@@ -148,7 +148,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const register = useCallback(async (email: string, password: string) => {
     try {
       setIsLoading(true)
-      const session = await apiClient.register(email, password) as Session
+      const session = await apiClient.register(email, password)
       saveSession(session)
     } catch (error) {
       console.error("Registration failed:", error)
