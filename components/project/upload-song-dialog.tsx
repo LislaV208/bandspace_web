@@ -7,9 +7,10 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Progress } from "@/components/ui/progress"
-import { Upload, X, FileAudio } from "lucide-react"
+import { Upload } from "lucide-react"
 import { useDropzone } from "react-dropzone"
 import { apiClient, ApiError } from "@/lib/api"
+import { AudioPreviewPlayer } from "@/components/audio/audio-preview-player"
 
 interface UploadSongDialogProps {
   open: boolean
@@ -70,10 +71,6 @@ export function UploadSongDialog({ open, onOpenChange, projectId, onSongUploaded
     },
   })
 
-  const formatFileSize = (bytes: number) => {
-    const mb = bytes / (1024 * 1024)
-    return `${mb.toFixed(1)} MB`
-  }
 
   const handleUpload = async () => {
     if (!selectedFile || !metadata.title.trim()) return
@@ -175,31 +172,10 @@ export function UploadSongDialog({ open, onOpenChange, projectId, onSongUploaded
               </div>
             </div>
           ) : (
-            <div className="border border-border rounded-lg p-4 bg-muted/20">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <div className="bg-primary/10 p-2 rounded-lg">
-                    <FileAudio className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <p className="font-medium text-foreground">{selectedFile.name}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {formatFileSize(selectedFile.size)} • {selectedFile.type}
-                    </p>
-                  </div>
-                </div>
-                {!isUploading && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={handleRemoveFile}
-                    className="h-8 w-8 hover:bg-destructive/10 hover:text-destructive"
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
-                )}
-              </div>
-            </div>
+            <AudioPreviewPlayer
+              file={selectedFile}
+              onRemove={!isUploading ? handleRemoveFile : undefined}
+            />
           )}
 
           {error && <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-lg">{error}</div>}
