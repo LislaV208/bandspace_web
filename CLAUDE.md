@@ -38,12 +38,21 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Custom `ApiError` class for error handling
 - Supports both JSON and FormData requests (for file uploads)
 
-#### Authentication (`contexts/auth-context.tsx`)
+#### Authentication System
 
+**Context & Session Management (`contexts/auth-context.tsx`)**
 - React Context for global auth state management
 - localStorage-based session persistence with key `bandspace_session`
 - Auto-refresh token mechanism (every 50 minutes)
 - Supports email/password and Google OAuth login
+
+**Route Protection Architecture**
+- **Layout-based authentication** using Next.js App Router route groups
+- Public routes: `/` (root), `/auth/success`, `/auth/error` (Google OAuth redirects)
+- Protected routes: All routes in `app/(authenticated)/` folder are automatically protected
+- **NO manual `<AuthGuard>` components needed** - protection is handled at layout level
+- Automatic redirect to `/` for unauthorized users accessing protected routes
+- Prevents 401 API errors by ensuring authentication before component mounting
 
 #### Type System (`lib/types.ts`)
 
@@ -54,17 +63,27 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 #### Component Structure
 
 - `components/ui/` - shadcn/ui components
-- `components/auth/` - Authentication-related components
+- `components/auth/` - Authentication-related components (including `AuthGuard`)
 - `components/dashboard/` - Dashboard page components
 - `components/project/` - Project-specific components with tabs
 - `components/audio/` - Audio player components
 
 #### App Structure (Next.js App Router)
 
+**Public Routes (no authentication required):**
 - `app/page.tsx` - Landing/home page
-- `app/dashboard/page.tsx` - User dashboard
-- `app/project/[id]/page.tsx` - Individual project pages
+- `app/auth/success/page.tsx` - Google OAuth success redirect
+- `app/auth/error/page.tsx` - Google OAuth error redirect
 - `app/layout.tsx` - Root layout with theme provider
+
+**Protected Routes (automatic authentication via layout):**
+- `app/(authenticated)/layout.tsx` - Auth guard layout (wraps all protected routes)
+- `app/(authenticated)/dashboard/page.tsx` - User dashboard
+- `app/(authenticated)/project/[id]/page.tsx` - Individual project pages
+
+**Adding New Protected Routes:**
+- Simply create new pages/folders inside `app/(authenticated)/`
+- No manual auth guards needed - protection is automatic
 
 ### Audio Features
 
@@ -83,11 +102,20 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### Development Notes
 
 - Use existing patterns for new components (check similar components first)
-- Authentication is required for most API endpoints
+- **Authentication**: All routes requiring authentication should be placed in `app/(authenticated)/` folder
+- **NO manual auth guards needed** - layout-based protection handles authentication automatically
 - Project-based collaboration model with invitations
 - File uploads should use FormData with the uploadRequest method
 - All forms should use React Hook Form with Zod validation
 - **Strong TypeScript Usage**: Always add proper return types to method signatures
+
+### Authentication Best Practices
+
+- **New Protected Pages**: Create inside `app/(authenticated)/` folder - authentication is automatic
+- **Public Pages**: Create in root `app/` folder (like landing page, auth callbacks)
+- **AuthGuard Component**: Available at `components/auth/auth-guard.tsx` but typically not needed due to layout-based protection
+- **useAuthGuard Hook**: Available at `hooks/use-auth-guard.ts` for custom auth logic if needed
+- **API Calls**: All API calls in protected routes execute only after authentication is confirmed, preventing 401 errors
 
 ## Related Projects
 
