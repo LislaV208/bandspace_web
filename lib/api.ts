@@ -2,6 +2,7 @@ import {
   Project,
   Session,
   Song,
+  SongListDownloadUrls,
   UpdateUserProfileRequest,
   User,
 } from "./types";
@@ -385,7 +386,11 @@ class ApiClient {
   }
 
   async getSongDownloadUrl(projectId: number, songId: number) {
-    return this.request(`/projects/${projectId}/songs/${songId}/download`);
+    return this.request(`/projects/${projectId}/songs/${songId}/download-url`);
+  }
+
+  async getProjectSongDownloadUrls(projectId: number): Promise<SongListDownloadUrls> {
+    return this.request(`/projects/${projectId}/songs/download-urls`);
   }
 
   // Members and invitations

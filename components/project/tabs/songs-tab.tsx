@@ -17,7 +17,6 @@ import {
   Info,
   MoreHorizontal,
   Music,
-  Play,
   Search,
   Trash2,
   Upload,
@@ -35,6 +34,9 @@ interface SongsTabProps {
 
 export function SongsTab({ projectId }: SongsTabProps) {
   const [songs, setSongs] = useState<Song[]>([]);
+  const [downloadUrls, setDownloadUrls] = useState<Map<number, string>>(
+    new Map()
+  );
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -42,18 +44,11 @@ export function SongsTab({ projectId }: SongsTabProps) {
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showDetailsDialog, setShowDetailsDialog] = useState(false);
   const [selectedSong, setSelectedSong] = useState<Song | null>(null);
-  const [showPlayer, setShowPlayer] = useState(false);
 
-  const {
-    currentSong,
-    currentSongIndex,
-    isPlaying,
-    playPause,
-    playNext,
-    playPrevious,
-    playSong,
-    changeSong,
-  } = useAudioPlayer({ songs });
+  const { currentSong, currentSongIndex, changeSong } = useAudioPlayer({
+    songs,
+    downloadUrls,
+  });
 
   useEffect(() => {
     loadSongs();
@@ -63,8 +58,21 @@ export function SongsTab({ projectId }: SongsTabProps) {
     try {
       setIsLoading(true);
       setError(null);
-      const songsData = await apiClient.getProjectSongs(projectId);
+
+      // Pobierz songs i download URLs jednocześnie
+      const [songsData, downloadUrlsData] = await Promise.all([
+        apiClient.getProjectSongs(projectId),
+        apiClient.getProjectSongDownloadUrls(projectId),
+      ]);
+
       setSongs(songsData);
+
+      // Stwórz mapę songId -> downloadUrl
+      const urlsMap = new Map<number, string>();
+      downloadUrlsData.urls.forEach(({ songId, url }) => {
+        urlsMap.set(songId, url);
+      });
+      setDownloadUrls(urlsMap);
     } catch (error) {
       console.error("Failed to load songs:", error);
       if (error instanceof ApiError) {
@@ -137,11 +145,10 @@ export function SongsTab({ projectId }: SongsTabProps) {
     setShowDetailsDialog(true);
   };
 
-  const handlePlaySong = (song: Song) => {
+  const handleSelectSong = (song: Song) => {
     const songIndex = songs.findIndex((s) => s.id === song.id);
     if (songIndex !== -1) {
-      playSong(songIndex);
-      setShowPlayer(true);
+      changeSong(songIndex);
     }
   };
 
@@ -181,7 +188,7 @@ export function SongsTab({ projectId }: SongsTabProps) {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <div className="relative flex-1 max-w-sm">
+            <div className="relative w-96">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Szukaj utworów..."
@@ -200,16 +207,6 @@ export function SongsTab({ projectId }: SongsTabProps) {
             Nowy utwór
           </Button>
         </div>
-
-        {/* Audio Player */}
-        {showPlayer && songs.length > 0 && (
-          <AudioPlayer
-            songs={songs}
-            currentSongIndex={currentSongIndex}
-            onSongChange={changeSong}
-            className="sticky top-4 z-10"
-          />
-        )}
 
         {/* Songs List */}
         {filteredSongs.length === 0 ? (
@@ -238,93 +235,97 @@ export function SongsTab({ projectId }: SongsTabProps) {
             {filteredSongs.map((song) => (
               <Card
                 key={song.id}
-                className="border-border bg-card hover:bg-card/80 transition-colors"
+                className={`border-border transition-colors cursor-pointer ${
+                  currentSong?.id === song.id
+                    ? "bg-card/80 ring-1 ring-primary/20"
+                    : "bg-card hover:bg-card/80"
+                }`}
+                onClick={() => handleSelectSong(song)}
               >
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4">
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() => handlePlaySong(song)}
-                        className={`h-12 w-12 rounded-full border-border hover:bg-primary hover:text-primary-foreground bg-transparent ${
-                          currentSong?.id === song.id && isPlaying
-                            ? "bg-primary text-primary-foreground"
-                            : ""
-                        }`}
-                      >
-                        <Play className="h-5 w-5" />
-                      </Button>
-
-                      <div className="space-y-1">
-                        <h3 className="font-semibold text-foreground">
-                          {song.title}
-                        </h3>
-                        <div className="flex items-center space-x-4 text-sm text-muted-foreground">
-                          <span>
-                            Od {song.createdBy.name || song.createdBy.email}
-                          </span>
-                          {song.duration && (
-                            <span>{formatDuration(song.duration)}</span>
-                          )}
-                          {song.bpm && <span>{song.bpm} BPM</span>}
-                          <span>
-                            {song.file?.size
-                              ? formatFileSize(song.file.size)
-                              : "Unknown size"}
-                          </span>
+                <CardContent className="p-4">
+                  <div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-4">
+                        <div className="h-12 w-12 rounded-full bg-accent flex items-center justify-center">
+                          <Music className="h-6 w-6 text-muted-foreground" />
                         </div>
-                        <div className="flex items-center space-x-2">
-                          <Badge variant="secondary" className="text-xs">
-                            {song.file?.mimeType
-                              ? song.file.mimeType
-                                  .split("/")[1]
-                                  ?.toUpperCase() || "UNKNOWN"
-                              : "UNKNOWN"}
-                          </Badge>
-                          {song.lyrics && (
-                            <Badge variant="outline" className="text-xs">
-                              Ma tekst
+
+                        <div className="space-y-1">
+                          <h3 className="font-semibold text-foreground">
+                            {song.title}
+                          </h3>
+                          <div className="flex items-center space-x-4 text-sm text-muted-foreground">
+                            <span>
+                              Od {song.createdBy.name || song.createdBy.email}
+                            </span>
+                            {song.duration && (
+                              <span>{formatDuration(song.duration)}</span>
+                            )}
+                            {song.bpm && <span>{song.bpm} BPM</span>}
+                            <span>
+                              {song.file?.size
+                                ? formatFileSize(song.file.size)
+                                : "Unknown size"}
+                            </span>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <Badge variant="secondary" className="text-xs">
+                              {song.file?.mimeType
+                                ? song.file.mimeType
+                                    .split("/")[1]
+                                    ?.toUpperCase() || "UNKNOWN"
+                                : "UNKNOWN"}
                             </Badge>
-                          )}
-                          {currentSong?.id === song.id && (
-                            <Badge
-                              variant="default"
-                              className="text-xs bg-primary"
-                            >
-                              Odtwarzane
-                            </Badge>
-                          )}
+                            {song.lyrics && (
+                              <Badge variant="outline" className="text-xs">
+                                Ma tekst
+                              </Badge>
+                            )}
+                            {currentSong?.id === song.id && (
+                              <Badge
+                                variant="default"
+                                className="text-xs bg-primary"
+                              >
+                                Wybrane
+                              </Badge>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem
-                          onClick={() => handleViewDetails(song)}
-                        >
-                          <Info className="mr-2 h-4 w-4" />
-                          Szczegóły
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleEditSong(song)}>
-                          <Edit className="mr-2 h-4 w-4" />
-                          Edytuj
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => handleDeleteSong(song.id)}
-                          className="text-destructive"
-                        >
-                          <Trash2 className="mr-2 h-4 w-4" />
-                          Usuń
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem
+                            onClick={() => handleViewDetails(song)}
+                          >
+                            <Info className="mr-2 h-4 w-4" />
+                            Szczegóły
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => handleEditSong(song)}
+                          >
+                            <Edit className="mr-2 h-4 w-4" />
+                            Edytuj
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => handleDeleteSong(song.id)}
+                            className="text-destructive"
+                          >
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            Usuń
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -332,6 +333,19 @@ export function SongsTab({ projectId }: SongsTabProps) {
           </div>
         )}
       </div>
+
+      {/* Bottom Player */}
+      {songs.length > 0 && currentSong && (
+        <div className="fixed bottom-0 left-0 right-0 z-50">
+          <AudioPlayer
+            songs={songs}
+            downloadUrls={downloadUrls}
+            currentSongIndex={currentSongIndex}
+            onSongChange={changeSong}
+            className="border-t bg-background/95 backdrop-blur-sm"
+          />
+        </div>
+      )}
 
       {/* Dialogs */}
       <UploadSongDialog

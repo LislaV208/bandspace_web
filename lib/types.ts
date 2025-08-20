@@ -34,6 +34,16 @@ export interface Song {
   lyrics?: string
 }
 
+export interface SongDownloadUrl {
+  songId: number
+  url: string
+}
+
+export interface SongListDownloadUrls {
+  urls: SongDownloadUrl[]
+  expiresAt: string
+}
+
 export interface Session {
   accessToken: string
   refreshToken: string

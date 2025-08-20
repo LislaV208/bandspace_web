@@ -5,10 +5,11 @@ import type { Song } from "@/lib/types"
 
 interface UseAudioPlayerProps {
   songs: Song[]
+  downloadUrls: Map<number, string>
   initialIndex?: number
 }
 
-export function useAudioPlayer({ songs, initialIndex = 0 }: UseAudioPlayerProps) {
+export function useAudioPlayer({ songs, downloadUrls, initialIndex = 0 }: UseAudioPlayerProps) {
   const [currentSongIndex, setCurrentSongIndex] = useState(initialIndex)
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentSong, setCurrentSong] = useState<Song | null>(songs[initialIndex] || null)
