@@ -1,81 +1,70 @@
-"use client"
+"use client";
 
-import type React from "react"
+import React from "react";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Separator } from "@/components/ui/separator"
-import type { Project } from "@/lib/types"
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { apiClient } from "@/lib/api";
+import type { Project } from "@/lib/types";
+import { useState } from "react";
+import { toast } from "sonner";
 
 interface ProjectSettingsDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  project: Project
-  onProjectUpdate: (project: Project) => void
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  project: Project;
+  onProjectUpdate: (project: Project) => void;
 }
 
-export function ProjectSettingsDialog({ open, onOpenChange, project, onProjectUpdate }: ProjectSettingsDialogProps) {
-  const [name, setName] = useState(project.name)
-  const [isLoading, setIsLoading] = useState(false)
-  const [isDeleting, setIsDeleting] = useState(false)
+export function ProjectSettingsDialog({
+  open,
+  onOpenChange,
+  project,
+  onProjectUpdate,
+}: ProjectSettingsDialogProps) {
+  const [name, setName] = useState(project.name);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Reset name when dialog opens or project changes
+  React.useEffect(() => {
+    if (open) {
+      setName(project.name);
+    }
+  }, [open, project.name]);
 
   const handleUpdateProject = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!name.trim()) return
+    e.preventDefault();
+    if (!name.trim()) return;
 
-    setIsLoading(true)
-
-    try {
-      // TODO: Implement update project API call
-      console.log("Updating project:", { projectId: project.id, name })
-
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
-      // Update project in parent component
-      onProjectUpdate({ ...project, name })
-      onOpenChange(false)
-    } catch (error) {
-      console.error("Failed to update project:", error)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const handleDeleteProject = async () => {
-    if (!confirm("Czy na pewno chcesz usunąć ten projekt? Ta operacja nie może zostać cofnięta.")) {
-      return
-    }
-
-    setIsDeleting(true)
+    setIsLoading(true);
 
     try {
-      // TODO: Implement delete project API call
-      console.log("Deleting project:", project.id)
-
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
-      // Redirect to dashboard
-      window.location.href = "/dashboard"
+      const updatedProject = await apiClient.updateProject(project.id, name.trim());
+      
+      // Update project in parent component with the response from API
+      onProjectUpdate(updatedProject as Project);
+      toast.success("Projekt został zaktualizowany");
+      onOpenChange(false);
     } catch (error) {
-      console.error("Failed to delete project:", error)
+      console.error("Failed to update project:", error);
+      toast.error("Nie udało się zaktualizować projektu");
     } finally {
-      setIsDeleting(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px] bg-card border-border">
         <DialogHeader>
-          <DialogTitle className="text-foreground">Ustawienia Projektu</DialogTitle>
-          <DialogDescription className="text-muted-foreground">
-            Zarządzaj ustawieniami i preferencjami projektu.
-          </DialogDescription>
+          <DialogTitle className="text-foreground">Edytuj projekt</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-6">
@@ -84,7 +73,7 @@ export function ProjectSettingsDialog({ open, onOpenChange, project, onProjectUp
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="name" className="text-foreground">
-                  Nazwa Projektu
+                  Nazwa projektu
                 </Label>
                 <Input
                   id="name"
@@ -101,26 +90,12 @@ export function ProjectSettingsDialog({ open, onOpenChange, project, onProjectUp
                 disabled={isLoading || !name.trim() || name === project.name}
                 className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
               >
-                {isLoading ? "Aktualizowanie..." : "Zaktualizuj Projekt"}
+                {isLoading ? "Aktualizowanie..." : "Zapisz"}
               </Button>
             </div>
           </form>
-
-          <Separator />
-
-          {/* Danger Zone */}
-          <div className="space-y-4">
-            <div>
-              <h4 className="text-sm font-medium text-foreground">Strefa Niebezpieczeństwa</h4>
-              <p className="text-sm text-muted-foreground">Nieodwracalne i destruktywne działania.</p>
-            </div>
-
-            <Button variant="destructive" onClick={handleDeleteProject} disabled={isDeleting} className="w-full">
-              {isDeleting ? "Usuwanie..." : "Usuń Projekt"}
-            </Button>
-          </div>
         </div>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

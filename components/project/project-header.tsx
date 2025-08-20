@@ -1,6 +1,5 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -16,6 +15,7 @@ import {
   MoreHorizontal,
   Music,
   Settings,
+  Trash2,
   UserPlus,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -63,13 +63,39 @@ export function ProjectHeader({ projectId }: ProjectHeaderProps) {
     return (
       <header className="border-b border-border bg-card">
         <div className="container mx-auto px-4 py-6">
-          <div className="animate-pulse space-y-4">
-            <div className="h-8 bg-muted rounded w-1/3"></div>
-            <div className="h-4 bg-muted rounded w-1/4"></div>
-            <div className="flex space-x-2">
-              {Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="h-8 w-8 bg-muted rounded-full"></div>
-              ))}
+          <div className="flex items-center justify-between animate-pulse">
+            {/* Left section skeleton */}
+            <div className="flex items-center space-x-4">
+              {/* Back button skeleton */}
+              <div className="h-10 w-10 bg-muted rounded-lg"></div>
+              
+              {/* Project icon skeleton */}
+              <div className="h-12 w-12 bg-muted rounded-xl"></div>
+              
+              {/* Project info skeleton */}
+              <div className="flex flex-col space-y-2">
+                {/* Project name skeleton */}
+                <div className="h-8 bg-muted rounded w-48"></div>
+                {/* Meta info skeleton */}
+                <div className="flex items-center space-x-4">
+                  <div className="h-4 bg-muted rounded w-32"></div>
+                  <div className="flex items-center space-x-2">
+                    {/* Avatar skeletons */}
+                    <div className="flex -space-x-1">
+                      {Array.from({ length: 3 }).map((_, i) => (
+                        <div key={i} className="h-6 w-6 bg-muted rounded-full"></div>
+                      ))}
+                    </div>
+                    <div className="h-4 bg-muted rounded w-16"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right section skeleton */}
+            <div className="flex items-center space-x-2">
+              <div className="h-10 w-20 bg-muted rounded-lg"></div>
+              <div className="h-10 w-10 bg-muted rounded-lg"></div>
             </div>
           </div>
         </div>
@@ -95,63 +121,47 @@ export function ProjectHeader({ projectId }: ProjectHeaderProps) {
     <>
       <header className="border-b border-border bg-card">
         <div className="container mx-auto px-4 py-6">
-          <div className="flex items-start justify-between">
-            <div className="space-y-4">
-              {/* Back button and title */}
-              <div className="flex items-center space-x-4">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => router.push("/dashboard")}
-                  className="hover:bg-secondary"
-                >
-                  <ArrowLeft className="h-4 w-4" />
-                </Button>
-                <div className="flex items-center space-x-3">
-                  <div className="bg-primary rounded-xl p-2">
-                    <Music className="h-6 w-6 text-primary-foreground" />
-                  </div>
-                  <div>
-                    <h1 className="text-2xl font-bold text-foreground">
-                      {project.name}
-                    </h1>
-                    <p className="text-muted-foreground">
-                      Utworzono {formatDate(project.createdAt)} •{" "}
-                      {project.users.length} członk
-                      {project.users.length === 1
-                        ? ""
-                        : project.users.length >= 2 && project.users.length <= 4
-                        ? "i"
-                        : "ów"}
-                    </p>
-                  </div>
-                </div>
+          <div className="flex items-center justify-between">
+            {/* Left section with back button and project info */}
+            <div className="flex items-center space-x-4">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => router.push("/dashboard")}
+                className="hover:bg-secondary"
+              >
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+
+              <div className="bg-primary rounded-xl p-2">
+                <Music className="h-6 w-6 text-primary-foreground" />
               </div>
 
-              {/* Members */}
-              <div className="flex items-center space-x-3">
-                <span className="text-sm font-medium text-foreground">
-                  Członkowie:
-                </span>
-                <div className="flex -space-x-2">
-                  {project.users.slice(0, 5).map((user) => (
-                    <UserAvatar key={user.id} user={user} size="md" />
-                  ))}
-                  {project.users.length > 5 && (
-                    <div className="h-8 w-8 rounded-full bg-muted border-2 border-background flex items-center justify-center">
-                      <span className="text-xs text-muted-foreground">
-                        +{project.users.length - 5}
-                      </span>
+              <div className="flex flex-col">
+                <h1 className="text-2xl font-bold text-foreground">
+                  {project.name}
+                </h1>
+                <div className="flex items-center space-x-4 text-sm text-muted-foreground">
+                  <span>Utworzono {formatDate(project.createdAt)}</span>
+                  <div className="flex items-center space-x-2">
+                    <div className="flex -space-x-1">
+                      {project.users.map((user) => (
+                        <UserAvatar key={user.id} user={user} size="sm" />
+                      ))}
+                      {project.users.length > 3 && (
+                        <div className="h-6 w-6 rounded-full bg-muted border border-background flex items-center justify-center">
+                          <span className="text-xs text-muted-foreground">
+                            +{project.users.length - 3}
+                          </span>
+                        </div>
+                      )}
                     </div>
-                  )}
+                  </div>
                 </div>
-                <Badge variant="secondary" className="ml-2">
-                  {project.users.length} łącznie
-                </Badge>
               </div>
             </div>
 
-            {/* Actions */}
+            {/* Right section with actions */}
             <div className="flex items-center space-x-2">
               <Button
                 variant="outline"
@@ -175,10 +185,11 @@ export function ProjectHeader({ projectId }: ProjectHeaderProps) {
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem onClick={() => setShowSettingsDialog(true)}>
                     <Settings className="mr-2 h-4 w-4" />
-                    Ustawienia Projektu
+                    Edytuj projekt
                   </DropdownMenuItem>
                   <DropdownMenuItem className="text-destructive">
-                    Usuń Projekt
+                    <Trash2 className="mr-2 h-4 w-4 text-destructive" />
+                    Usuń projekt
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
