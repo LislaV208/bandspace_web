@@ -1,55 +1,63 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { ArrowLeft, Settings, UserPlus, MoreHorizontal, Music } from "lucide-react"
-import { useRouter } from "next/navigation"
-import type { Project } from "@/lib/types"
-import { InviteMemberDialog } from "./invite-member-dialog"
-import { ProjectSettingsDialog } from "./project-settings-dialog"
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { UserAvatar } from "@/components/ui/user-avatar";
+import { apiClient } from "@/lib/api";
+import type { Project } from "@/lib/types";
+import {
+  ArrowLeft,
+  MoreHorizontal,
+  Music,
+  Settings,
+  UserPlus,
+} from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { InviteMemberDialog } from "./invite-member-dialog";
+import { ProjectSettingsDialog } from "./project-settings-dialog";
 
 interface ProjectHeaderProps {
-  projectId: number
+  projectId: number;
 }
 
 export function ProjectHeader({ projectId }: ProjectHeaderProps) {
-  const router = useRouter()
-  const [project, setProject] = useState<Project | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [showInviteDialog, setShowInviteDialog] = useState(false)
-  const [showSettingsDialog, setShowSettingsDialog] = useState(false)
+  const router = useRouter();
+  const [project, setProject] = useState<Project | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [showInviteDialog, setShowInviteDialog] = useState(false);
+  const [showSettingsDialog, setShowSettingsDialog] = useState(false);
 
   useEffect(() => {
-    // Mock data - will be replaced with API call
-    const mockProject: Project = {
-      id: projectId,
-      name: "Summer Album 2024",
-      slug: "summer-album-2024",
-      createdAt: "2024-01-15T10:00:00Z",
-      updatedAt: "2024-01-20T15:30:00Z",
-      users: [
-        { id: 1, email: "john@example.com", name: "John Doe" },
-        { id: 2, email: "jane@example.com", name: "Jane Smith" },
-        { id: 3, email: "mike@example.com", name: "Mike Johnson" },
-      ],
-    }
+    const fetchProject = async () => {
+      try {
+        setIsLoading(true);
+        const projectData = await apiClient.getProject(projectId);
+        setProject(projectData as Project);
+      } catch (error) {
+        console.error("Failed to fetch project:", error);
+        setProject(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    setTimeout(() => {
-      setProject(mockProject)
-      setIsLoading(false)
-    }, 500)
-  }, [projectId])
+    fetchProject();
+  }, [projectId]);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("pl-PL", {
       month: "long",
       day: "numeric",
       year: "numeric",
-    })
-  }
+    });
+  };
 
   if (isLoading) {
     return (
@@ -66,7 +74,7 @@ export function ProjectHeader({ projectId }: ProjectHeaderProps) {
           </div>
         </div>
       </header>
-    )
+    );
   }
 
   if (!project) {
@@ -74,11 +82,13 @@ export function ProjectHeader({ projectId }: ProjectHeaderProps) {
       <header className="border-b border-border bg-card">
         <div className="container mx-auto px-4 py-6">
           <div className="text-center">
-            <h1 className="text-2xl font-bold text-foreground">Projekt nie został znaleziony</h1>
+            <h1 className="text-2xl font-bold text-foreground">
+              Projekt nie został znaleziony
+            </h1>
           </div>
         </div>
       </header>
-    )
+    );
   }
 
   return (
@@ -102,9 +112,17 @@ export function ProjectHeader({ projectId }: ProjectHeaderProps) {
                     <Music className="h-6 w-6 text-primary-foreground" />
                   </div>
                   <div>
-                    <h1 className="text-2xl font-bold text-foreground">{project.name}</h1>
+                    <h1 className="text-2xl font-bold text-foreground">
+                      {project.name}
+                    </h1>
                     <p className="text-muted-foreground">
-                      Utworzono {formatDate(project.createdAt)} • {project.users.length} członk{project.users.length === 1 ? "" : project.users.length >= 2 && project.users.length <= 4 ? "i" : "ów"}
+                      Utworzono {formatDate(project.createdAt)} •{" "}
+                      {project.users.length} członk
+                      {project.users.length === 1
+                        ? ""
+                        : project.users.length >= 2 && project.users.length <= 4
+                        ? "i"
+                        : "ów"}
                     </p>
                   </div>
                 </div>
@@ -112,22 +130,18 @@ export function ProjectHeader({ projectId }: ProjectHeaderProps) {
 
               {/* Members */}
               <div className="flex items-center space-x-3">
-                <span className="text-sm font-medium text-foreground">Członkowie:</span>
+                <span className="text-sm font-medium text-foreground">
+                  Członkowie:
+                </span>
                 <div className="flex -space-x-2">
                   {project.users.slice(0, 5).map((user) => (
-                    <Avatar key={user.id} className="h-8 w-8 border-2 border-background">
-                      <AvatarImage src={undefined || "/placeholder.svg"} alt={user.name} />
-                      <AvatarFallback className="bg-secondary text-xs">
-                        {user.name
-                          ?.split(" ")
-                          .map((n) => n[0])
-                          .join("") || "U"}
-                      </AvatarFallback>
-                    </Avatar>
+                    <UserAvatar key={user.id} user={user} size="md" />
                   ))}
                   {project.users.length > 5 && (
                     <div className="h-8 w-8 rounded-full bg-muted border-2 border-background flex items-center justify-center">
-                      <span className="text-xs text-muted-foreground">+{project.users.length - 5}</span>
+                      <span className="text-xs text-muted-foreground">
+                        +{project.users.length - 5}
+                      </span>
                     </div>
                   )}
                 </div>
@@ -150,7 +164,11 @@ export function ProjectHeader({ projectId }: ProjectHeaderProps) {
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="icon" className="border-border hover:bg-secondary bg-transparent">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="border-border hover:bg-secondary bg-transparent"
+                  >
                     <MoreHorizontal className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -159,7 +177,9 @@ export function ProjectHeader({ projectId }: ProjectHeaderProps) {
                     <Settings className="mr-2 h-4 w-4" />
                     Ustawienia Projektu
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="text-destructive">Usuń Projekt</DropdownMenuItem>
+                  <DropdownMenuItem className="text-destructive">
+                    Usuń Projekt
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
@@ -167,7 +187,11 @@ export function ProjectHeader({ projectId }: ProjectHeaderProps) {
         </div>
       </header>
 
-      <InviteMemberDialog open={showInviteDialog} onOpenChange={setShowInviteDialog} projectId={projectId} />
+      <InviteMemberDialog
+        open={showInviteDialog}
+        onOpenChange={setShowInviteDialog}
+        projectId={projectId}
+      />
 
       <ProjectSettingsDialog
         open={showSettingsDialog}
@@ -176,5 +200,5 @@ export function ProjectHeader({ projectId }: ProjectHeaderProps) {
         onProjectUpdate={setProject}
       />
     </>
-  )
+  );
 }

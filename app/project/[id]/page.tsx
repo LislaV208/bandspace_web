@@ -1,5 +1,5 @@
 import { ProjectHeader } from "@/components/project/project-header"
-import { ProjectTabs } from "@/components/project/project-tabs"
+import { SongsTab } from "@/components/project/tabs/songs-tab"
 import { notFound } from "next/navigation"
 
 interface ProjectPageProps {
@@ -19,7 +19,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
     <div className="min-h-screen bg-background">
       <ProjectHeader projectId={projectId} />
       <main className="container mx-auto px-4 py-6">
-        <ProjectTabs projectId={projectId} />
+        <SongsTab projectId={projectId} />
       </main>
     </div>
   )
