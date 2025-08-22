@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { ProfileDialog } from "@/components/profile/profile-dialog";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -11,10 +11,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { UserAvatar } from "@/components/ui/user-avatar";
-import { ProfileDialog } from "@/components/profile/profile-dialog";
 import { useAuth } from "@/contexts/auth-context";
 import { LogOut, Music, User } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export function DashboardHeader() {
   const { user, logout } = useAuth();
@@ -76,14 +76,18 @@ export function DashboardHeader() {
                 <LogOut className="mr-2 h-4 w-4" />
                 <span>Wyloguj</span>
               </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <div className="px-2 py-1.5 text-xs text-muted-foreground text-center">
+                v{process.env.APP_VERSION}
+              </div>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
       </div>
-      
-      <ProfileDialog 
-        open={showProfileDialog} 
-        onOpenChange={setShowProfileDialog} 
+
+      <ProfileDialog
+        open={showProfileDialog}
+        onOpenChange={setShowProfileDialog}
       />
     </header>
   );
